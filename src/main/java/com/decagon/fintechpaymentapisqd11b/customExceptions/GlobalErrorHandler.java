@@ -72,5 +72,6 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         errorResponse.setDebugMessage("Password mismatch!");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 }
 

@@ -59,8 +59,9 @@ class RegistrationServiceImplTest {
         when(usersService.registerUser((UsersDTO) any())).thenReturn("Register User");
         when(mailService.sendMail((SendMailDto) any())).thenReturn("Send Mail");
         assertEquals("Please check your email for account activation link.",
-                registrationServiceImpl.register(new UsersDTO("Jane", "Doe", "janedoe", "BVN", "jane.doe@example.org",
-                        "4105551212", "iloveyou", "iloveyou", "Pin")));
+                registrationServiceImpl.register(new UsersDTO(
+                        "sulaiman", "lawal", "12345678901","lawalmonsaw@gmail.com", "08162210489",
+                        "12345", "12345", "1234")));
         verify(usersService).registerUser((UsersDTO) any());
         verify(mailService).sendMail((SendMailDto) any());
     }
@@ -83,7 +84,7 @@ class RegistrationServiceImplTest {
         Wallet wallet = new Wallet();
         wallet.setAccountNumber("42");
         wallet.setBalance(null);
-        wallet.setBankName("Bank Name");
+        wallet.setBankName("Wema Name");
         wallet.setCreateAt(null);
         wallet.setCreatedAt(null);
         wallet.setId(123L);
@@ -93,19 +94,17 @@ class RegistrationServiceImplTest {
         wallet.setUsers(new Users());
 
         Users users = new Users();
-        users.setBVN("BVN");
-        users.setCreatedAt(LocalDateTime.of(1, 1, 1, 1, 1));
+        users.setBVN("1253635698");
+        users.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         users.setEmail("jane.doe@example.org");
         users.setFirstName("Jane");
         users.setId(123L);
         users.setLastName("Doe");
         users.setPassword("iloveyou");
-        users.setPhoneNumber("4105551212");
-        users.setPin("Pin");
-        users.setRole("Role");
-        users.setToken("ABC123");
-        users.setUpdatedAt(LocalDateTime.of(1, 1, 1, 1, 1));
-        users.setUsername("janedoe");
+        users.setPhoneNumber("0998467657");
+        users.setPin("1234");
+        users.setRole("USER");
+        users.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         users.setUsersStatus(UsersStatus.ACTIVE);
         users.setWallet(wallet);
 
@@ -119,40 +118,38 @@ class RegistrationServiceImplTest {
     @Test
     void testConfirmToken() throws JSONException {
         Users users = new Users();
-        users.setBVN("BVN");
+        users.setBVN("3425425363");
         users.setCreatedAt(null);
         users.setEmail("jane.doe@example.org");
         users.setFirstName("Jane");
         users.setId(123L);
         users.setLastName("Doe");
         users.setPassword("iloveyou");
-        users.setPhoneNumber("4105551212");
-        users.setPin("Pin");
-        users.setRole("Role");
-        users.setToken("ABC123");
+        users.setPhoneNumber("0803564254");
+        users.setPin("1234");
+        users.setRole("USER");
         users.setUpdatedAt(null);
-        users.setUsername("janedoe");
         users.setUsersStatus(UsersStatus.ACTIVE);
         users.setWallet(new Wallet());
 
         Wallet wallet = new Wallet();
-        wallet.setAccountNumber("42");
+        wallet.setAccountNumber("4245363766");
         wallet.setBalance(BigDecimal.valueOf(42L));
-        wallet.setBankName("Bank Name");
-        wallet.setCreateAt(LocalDateTime.of(1, 1, 1, 1, 1));
-        wallet.setCreatedAt(LocalDateTime.of(1, 1, 1, 1, 1));
+        wallet.setBankName("Wema Name");
+        wallet.setCreateAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        wallet.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setId(123L);
-        wallet.setModifyAt(LocalDateTime.of(1, 1, 1, 1, 1));
+        wallet.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setTransactions(new ArrayList<>());
-        wallet.setUpdatedAt(LocalDateTime.of(1, 1, 1, 1, 1));
+        wallet.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setUsers(users);
 
         ConfirmationToken confirmationToken = new ConfirmationToken();
-        confirmationToken.setConfirmedAt(LocalDateTime.of(1, 1, 1, 1, 1));
-        confirmationToken.setCreatedAt(LocalDateTime.of(1, 1, 1, 1, 1));
-        confirmationToken.setExpiresAt(LocalDateTime.of(1, 1, 1, 1, 1));
+        confirmationToken.setConfirmedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        confirmationToken.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        confirmationToken.setExpiresAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         confirmationToken.setId(123L);
-        confirmationToken.setToken("ABC123");
+        confirmationToken.setToken("1234");
         confirmationToken.setUser(users);
         Optional<ConfirmationToken> ofResult = Optional.of(confirmationToken);
         when(confirmationTokenService.getToken((String) any())).thenReturn(ofResult);

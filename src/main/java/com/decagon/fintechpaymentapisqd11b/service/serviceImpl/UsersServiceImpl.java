@@ -79,7 +79,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUsersStatus(UsersStatus.INACTIVE);
         user.setRole("USER");
-        user.setUsername(usersDTO.getUsername());
         Users user1 = usersRepository.save(user);
 
         Wallet wallet = generateWallet(user1);
@@ -110,14 +109,14 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
     @Override
     public UsersResponse getUser() {
-        String email = "";
-        Users users1 = usersRepository.findUsersByEmail(jwtUtils.extractUsername(email));
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users user1 = usersRepository.findUsersByEmail(user.getUsername());
         UsersResponse usersResponse = UsersResponse.builder()
-                .firstName(users1.getFirstName())
-                .lastName(users1.getLastName())
-                .email(users1.getEmail())
-                .phoneNumber(users1.getPhoneNumber())
-                .BVN(users1.getBVN())
+                .firstName(user1.getFirstName())
+                .lastName(user1.getLastName())
+                .email(user1.getEmail())
+                .phoneNumber(user1.getPhoneNumber())
+                .BVN(user1.getBVN())
                 .build();
         return usersResponse;
 

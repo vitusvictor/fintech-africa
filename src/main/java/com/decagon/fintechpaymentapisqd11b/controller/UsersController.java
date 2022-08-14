@@ -31,7 +31,6 @@ public class UsersController {
     {
             log.info("successful");
             String token = loginService.login(loginRequestPayload);
-                walletService.getToken(token);
             return new ResponseEntity<>(new LoginResponseDto(token),HttpStatus.OK);
     }
 
