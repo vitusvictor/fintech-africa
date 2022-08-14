@@ -2,6 +2,7 @@ package com.decagon.fintechpaymentapisqd11b.controller;
 
 import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
 import com.decagon.fintechpaymentapisqd11b.dto.LoginResponseDto;
+import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "/api/")
 @Slf4j
+@RequestMapping(path = "/api/v1")
 public class UsersController {
 
     private final UsersServiceImpl usersService;
@@ -37,6 +38,13 @@ public class UsersController {
     @GetMapping("/viewWalletDetails")
     public ResponseEntity<WalletDto> viewWalletDetails()  {
         return new ResponseEntity<>(walletService.viewWalletDetails(),HttpStatus.OK);
+    }
+
+
+    @GetMapping("/viewUser")
+    public ResponseEntity<UsersResponse> getUsers(){
+       UsersResponse usersResponse = usersService.getUser();
+        return new ResponseEntity<>(usersResponse, HttpStatus.OK);
     }
 
 }
