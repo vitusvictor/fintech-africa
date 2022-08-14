@@ -48,8 +48,6 @@ public class Users extends BaseClass{
     @NotNull
     private UsersStatus usersStatus;
 
-    @NotNull
-    private String token;
 
     @OneToOne(mappedBy = "users")
     private Wallet wallet;
@@ -57,7 +55,6 @@ public class Users extends BaseClass{
     @NotNull
     private String role;
 
-    private String username;
 
 }
 

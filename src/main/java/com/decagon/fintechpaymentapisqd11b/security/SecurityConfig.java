@@ -1,7 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.security;
 
-//import com.decagon.fintechpaymentapisqd11b.security.filter.CustomAuthenticationFilter;
-import com.decagon.fintechpaymentapisqd11b.security.filter.CustomAuthorisationFilter;
+import com.decagon.fintechpaymentapisqd11b.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserDetailsService userDetailsService;
+
+    private final CustomAuthorizationFilter customAuthorizationFilter;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
@@ -31,11 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable() ;
-        http.authorizeRequests().antMatchers("/login", "/registration/register/**","/registration/confirmToken/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/all/**", "/viewWalletDetails", "/viewUser/**").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers("/api/v1/login", "/api/v1/registration/register/**","/api/v1/registration/confirmToken/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET,  "/api/v1/viewWalletDetails", "/api/v1//viewUser/**").hasAnyAuthority("USER");
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().anyRequest().authenticated();
-        http.addFilterBefore(new CustomAuthorisationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     @Override

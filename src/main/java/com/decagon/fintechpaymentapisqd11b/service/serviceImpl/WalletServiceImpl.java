@@ -19,6 +19,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -78,9 +83,9 @@ public class WalletServiceImpl implements WalletService {
 
     WalletDto walletDto = new WalletDto();
 
-    String email = jwtUtils.extractUsername(userToken);
+    User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    Users users = usersRepository.findUsersByEmail(email);
+    Users users = usersRepository.findUsersByEmail(user.getUsername());
     if(users == null){
         throw new UsernameNotFoundException("User Not found");
     }

@@ -1,6 +1,9 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
 import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
+import com.decagon.fintechpaymentapisqd11b.entities.Users;
+import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
+import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 import com.decagon.fintechpaymentapisqd11b.service.LoginService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 @Service @RequiredArgsConstructor @Slf4j
 public class LoginServiceImpl implements LoginService {
 
+    private final UsersRepository usersRepository;
+
     private final UsersServiceImpl usersService;
 
     private final JwtUtils jwtUtils;
@@ -23,6 +28,13 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String login(LoginRequestPayload loginRequestPayload) {
+        Users user = usersRepository.findByEmail(loginRequestPayload.getEmail()).
+                orElseThrow(()-> new UsernameNotFoundException("User not found!"));
+
+        if (user.getUsersStatus() != UsersStatus.ACTIVE){
+            return "Please verify your account from your email";
+        }
+
         try{
             authenticationManager.authenticate( new UsernamePasswordAuthenticationToken
                     (loginRequestPayload.getEmail(), loginRequestPayload.getPassword())
