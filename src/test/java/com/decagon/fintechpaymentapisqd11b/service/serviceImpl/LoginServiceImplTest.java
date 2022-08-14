@@ -3,15 +3,22 @@ package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
+import com.decagon.fintechpaymentapisqd11b.entities.Users;
+import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
+import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import org.junit.jupiter.api.Disabled;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,22 +48,80 @@ class LoginServiceImplTest {
     private LoginServiceImpl loginServiceImpl;
 
     @MockBean
+    private UsersRepository usersRepository;
+
+    @MockBean
     private UsersServiceImpl usersServiceImpl;
 
 
     @Test
     void testLogin() throws AuthenticationException {
+        Wallet wallet = new Wallet();
+        wallet.setAccountNumber("00912347464");
+        wallet.setBalance(null);
+        wallet.setBankName("Wema Name");
+        wallet.setCreateAt(null);
+        wallet.setCreatedAt(null);
+        wallet.setId(123L);
+        wallet.setModifyAt(null);
+        wallet.setTransactions(new ArrayList<>());
+        wallet.setUpdatedAt(null);
+        wallet.setUsers(new Users());
+
+        Users users = new Users();
+        users.setBVN("12345678901");
+        users.setCreatedAt(LocalDateTime.of(2022, 07, 2, 8, 43));
+        users.setEmail("jane.doe@example.org");
+        users.setFirstName("Jane");
+        users.setId(123L);
+        users.setLastName("Doe");
+        users.setPassword("12345");
+        users.setPhoneNumber("0704563536");
+        users.setPin("1234");
+        users.setRole("USER");
+        users.setUpdatedAt(LocalDateTime.of(2022, 07, 2, 8, 43));
+        users.setUsersStatus(UsersStatus.ACTIVE);
+        users.setWallet(wallet);
+
+        Wallet wallet1 = new Wallet();
+        wallet1.setAccountNumber("4264784674");
+        wallet1.setBalance(BigDecimal.valueOf(42L));
+        wallet1.setBankName("Wema Name");
+        wallet1.setCreateAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        wallet1.setId(123L);
+        wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        wallet1.setTransactions(new ArrayList<>());
+        wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        wallet1.setUsers(users);
+
+        Users users1 = new Users();
+        users1.setBVN("1664664657");
+        users1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        users1.setEmail("jane.doe@example.org");
+        users1.setFirstName("Jane");
+        users1.setId(123L);
+        users1.setLastName("Doe");
+        users1.setPassword("iloveyou");
+        users1.setPhoneNumber("0707464t66");
+        users1.setPin("1234");
+        users1.setRole("USEr");
+        users1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
+        users1.setUsersStatus(UsersStatus.ACTIVE);
+        users1.setWallet(wallet1);
+        Optional<Users> ofResult = Optional.of(users1);
+        when(usersRepository.findByEmail((String) any())).thenReturn(ofResult);
         when(usersServiceImpl.loadUserByUsername((String) any()))
-                .thenReturn(new User("Lawal", "12345", new ArrayList<>()));
-        when(jwtUtils.generateToken((UserDetails) any())).thenReturn("login successful");
+                .thenReturn(new User("janedoe", "iloveyou", new ArrayList<>()));
+        when(jwtUtils.generateToken((UserDetails) any())).thenReturn("ABC123");
         when(authenticationManager.authenticate((Authentication) any()))
                 .thenReturn(new TestingAuthenticationToken("Principal", "Credentials"));
-        assertEquals("login successful", loginServiceImpl.login(new LoginRequestPayload("lawalmonsaw@gmail.com", "12345")));
+        assertEquals("ABC123", loginServiceImpl.login(new LoginRequestPayload("jane.doe@example.org", "iloveyou")));
+        verify(usersRepository).findByEmail((String) any());
         verify(usersServiceImpl).loadUserByUsername((String) any());
         verify(jwtUtils).generateToken((UserDetails) any());
         verify(authenticationManager).authenticate((Authentication) any());
     }
-
 
 
 }
