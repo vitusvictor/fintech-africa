@@ -43,9 +43,4 @@ public class UsersController {
         return new ResponseEntity<>(usersResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/localTransfer")
-    public ResponseEntity<String> localTransfer(@RequestBody UsersDTO usersDTO){
-        return new ResponseEntity<>(usersService.localTransfer(usersDTO),HttpStatus.OK);
-    }
-
 }

@@ -143,9 +143,4 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
     }
 
-    @Override
-    public String localTransfer(UsersDTO usersDTO) {
-        return null;
-    }
-
 }

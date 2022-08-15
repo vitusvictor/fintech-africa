@@ -13,6 +13,4 @@ public interface UsersService {
     Wallet generateWallet(Users user) throws JSONException;
 
     UsersResponse getUser();
-
-    String localTransfer(UsersDTO usersDTO);
 }
