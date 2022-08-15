@@ -122,7 +122,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
     }
 
-
     @Override
     public void enableUser(String email) {
         Users user = usersRepository.findByEmail(email).orElseThrow(() ->  new UserNotFoundException("Users not found."));
@@ -143,4 +142,10 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             return new User(user.getEmail(), user.getPassword(), Collections.singleton(authority));
         }
     }
+
+    @Override
+    public String localTransfer(UsersDTO usersDTO) {
+        return null;
+    }
+
 }

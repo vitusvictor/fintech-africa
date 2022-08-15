@@ -1,9 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
-import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
-import com.decagon.fintechpaymentapisqd11b.dto.LoginResponseDto;
-import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
-import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
+import com.decagon.fintechpaymentapisqd11b.dto.*;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
@@ -44,6 +41,11 @@ public class UsersController {
     public ResponseEntity<UsersResponse> getUsers(){
        UsersResponse usersResponse = usersService.getUser();
         return new ResponseEntity<>(usersResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/localTransfer")
+    public ResponseEntity<String> localTransfer(@RequestBody UsersDTO usersDTO){
+        return new ResponseEntity<>(usersService.localTransfer(usersDTO),HttpStatus.OK);
     }
 
 }

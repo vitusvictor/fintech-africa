@@ -14,4 +14,5 @@ public interface UsersService {
 
     UsersResponse getUser();
 
+    String localTransfer(UsersDTO usersDTO);
 }
