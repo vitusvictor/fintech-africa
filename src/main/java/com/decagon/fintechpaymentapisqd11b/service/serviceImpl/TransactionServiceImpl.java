@@ -6,6 +6,7 @@ import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
 public class TransactionServiceImpl implements TransactionService {
     @Override
     public String localTransfer(TransferRequest transferRequest) {
-        return null;
+        
+        return "Transfer successful!";
     }
 }
