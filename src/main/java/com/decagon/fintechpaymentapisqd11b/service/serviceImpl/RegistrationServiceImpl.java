@@ -53,7 +53,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         sendMailVerificationLink(user.getFirstName(), user.getEmail(), link);
 
         usersService.saveToken(token, user);
-        usersService.enableUser(user.getEmail());
     }
 
     @Override
