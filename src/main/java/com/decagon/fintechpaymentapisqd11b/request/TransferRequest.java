@@ -1,6 +1,5 @@
 package com.decagon.fintechpaymentapisqd11b.request;
 
-import com.decagon.fintechpaymentapisqd11b.entities.BaseClass;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
