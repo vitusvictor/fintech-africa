@@ -1,6 +1,7 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
 import com.decagon.fintechpaymentapisqd11b.entities.FlwBank;
+import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.service.TransferService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,8 @@ public class OtherBanksTransfer {
 
     }
 
-//    @PostMapping("/verify-transfer")
-//    public void verify(@RequestBody ){
-//
-//    }
+    @PostMapping("/verify-transfer")
+    public void verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
+
+    }
 }
