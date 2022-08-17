@@ -11,6 +11,7 @@ import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.request.FlwAccountRequest;
 import com.decagon.fintechpaymentapisqd11b.request.OtherBankTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
+import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwBankResponse;
@@ -107,7 +108,7 @@ public class OtherBanksTransferImpl implements TransferService {
                 .narration(transferRequest.getNarration())
                 .reference(clientRef)
                 .debitCurrency("NGN")
-                .callbackUrl("LAWAL/MUMINI")
+                .callbackUrl(Constant.VERIFY_TRANSFER)
                 .build();
 
         RestTemplate restTemplate = new RestTemplate();
@@ -168,6 +169,16 @@ public class OtherBanksTransferImpl implements TransferService {
         int result = wallet.getBalance().compareTo(requestAmount);
         if (result == 0 || result == 1) return true;
         return false;
+    }
+
+    @Override
+    public void verifyTransfer(VerifyTransferRequest verifyTransferRequest){
+        Long flwRef = Long.valueOf(verifyTransferRequest.getData().getId());
+        String status = verifyTransferRequest.getData().getStatus();
+
+        Transfer transfer = transferRepository.findTransfersByFlwRef(flwRef);
+        transfer.setTransferStatus(status);
+        transferRepository.save(transfer);
     }
 
 

@@ -1,11 +1,11 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
 import com.decagon.fintechpaymentapisqd11b.entities.FlwBank;
+import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.service.TransferService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,6 +17,11 @@ public class OtherBanksTransfer {
     @GetMapping("/banks")
     public List<FlwBank> getBanks() {
         return transferService.getBanks();
+
+    }
+
+    @PostMapping("/verify-transfer")
+    public void verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
 
     }
 }
