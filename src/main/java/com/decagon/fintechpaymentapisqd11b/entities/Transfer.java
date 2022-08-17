@@ -14,39 +14,42 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Builder
-
 @Entity
-public class Transaction extends BaseClass{
-    @NotNull
-    private BigDecimal amount;
-
+public class Transfer extends BaseClass{
     @NotNull
     @Column(length = 11)
     private String sourceAccount;
 
     @NotNull
-    private String narration;
+    private String destinationAccountNumber;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private UsersStatus userStatus;
+    private String destinationAccountName;
+
+    @NotNull
+    private String destinationBank;
+
+    @NotNull
+    private BigDecimal amount;
+
+    @NotNull
+    private String narration;
 
     @NotNull
     private String clientRef;
 
     @NotNull
-    private String flwRef;
+    private Long flwRef;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    @NotNull
-    private Date transactionDate;
-
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     private Wallet wallet;
+
+    private String transferStatus;
+
 }
 

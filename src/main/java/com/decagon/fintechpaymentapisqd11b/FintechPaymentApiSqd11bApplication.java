@@ -14,8 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class FintechPaymentApiSqd11bApplication {
-
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(FintechPaymentApiSqd11bApplication.class, args);
 	}
