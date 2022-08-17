@@ -1,19 +1,31 @@
 package com.decagon.fintechpaymentapisqd11b.request;
 
+import com.decagon.fintechpaymentapisqd11b.entities.BaseClass;
+import lombok.*;
+
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
-public class TransferRequest {
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransferRequest{
 
-    @NotNull(message = "account number is required")
+    @NotNull(message = "Account number is required")
     private String accountNumber;
 
-    @NotNull(message = "account name is required")
+    @NotNull(message = "Account name is required")
     private String accountName;
 
-    @NotNull(message = "Amount is required")
-    private Double amount;
+    @NotNull(message = "Bank name is required")
+    private String bankName;
 
-    @NotNull(message = "narration is required")
+    @NotNull(message = "Amount is required")
+    private BigDecimal amount;
+
+    @NotNull(message = "Narration is required")
     private String narration;
 
     @NotNull(message = "Pin is required")

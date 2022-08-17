@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -17,7 +18,7 @@ import java.util.Date;
 @Builder
 
 @Entity
-public class Transaction extends BaseClass{
+public class Transfer extends BaseClass{
     @NotNull
     private BigDecimal amount;
 
@@ -43,7 +44,7 @@ public class Transaction extends BaseClass{
     private TransactionType transactionType;
 
     @NotNull
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")

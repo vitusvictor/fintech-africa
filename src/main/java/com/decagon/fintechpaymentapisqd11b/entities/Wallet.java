@@ -33,7 +33,7 @@ public class Wallet extends BaseClass{
     private Users users;
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Transaction> transactions;
+    private List<Transfer> transfers;
 
     @CreationTimestamp
     private LocalDateTime createAt;

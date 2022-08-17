@@ -3,7 +3,6 @@ package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,13 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -64,7 +61,7 @@ class LoginServiceImplTest {
         wallet.setCreatedAt(null);
         wallet.setId(123L);
         wallet.setModifyAt(null);
-        wallet.setTransactions(new ArrayList<>());
+        wallet.setTransfers(new ArrayList<>());
         wallet.setUpdatedAt(null);
         wallet.setUsers(new Users());
 
@@ -91,7 +88,7 @@ class LoginServiceImplTest {
         wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setId(123L);
         wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet1.setTransactions(new ArrayList<>());
+        wallet1.setTransfers(new ArrayList<>());
         wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setUsers(users);
 
