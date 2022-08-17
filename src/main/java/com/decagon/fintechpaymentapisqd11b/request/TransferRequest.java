@@ -19,9 +19,6 @@ public class TransferRequest{
     @NotNull(message = "Account name is required")
     private String accountName;
 
-    @NotNull(message = "Bank name is required")
-    private String bankName;
-
     @NotNull(message = "Amount is required")
     private BigDecimal amount;
 

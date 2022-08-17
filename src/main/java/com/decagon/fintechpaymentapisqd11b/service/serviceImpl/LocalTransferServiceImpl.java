@@ -1,7 +1,9 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
+import com.decagon.fintechpaymentapisqd11b.customExceptions.AccountDoesNotExistException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.IncorrectPinException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.InsufficientBalanceException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidAmountException;
 import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
@@ -10,7 +12,7 @@ import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
+import com.decagon.fintechpaymentapisqd11b.service.LocalTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -24,7 +26,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionServiceImpl implements TransactionService {
+public class LocalTransferServiceImpl implements LocalTransferService {
 
     private final WalletRepository walletRepository;
 
@@ -51,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         if(transferRequest.getAmount().compareTo(BigDecimal.ZERO) == 0 ||
                 transferRequest.getAmount().compareTo(BigDecimal.ZERO) < 0){
-            throw new RuntimeException("Invalid amount!");
+            throw new InvalidAmountException("Invalid amount!");
         }
 
         if (wallet.getBalance().compareTo(transferRequest.getAmount()) < 0){
@@ -60,7 +62,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Wallet wallet1 = walletRepository.findWalletByAccountNumber(transferRequest.getAccountNumber());
         if(wallet1 == null) {
-            throw new RuntimeException("Account number does not exist!");
+            throw new AccountDoesNotExistException("Account number does not exist!");
         }
 
         BigDecimal newBalance = wallet.getBalance().subtract(transferRequest.getAmount());
@@ -71,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
         wallet1.setBalance(creditBalance);
         Wallet creditedWallet = walletRepository.save(wallet1);
 
-        Transfer transfer = Transfer.builder()
+        Transfer sender = Transfer.builder()
                 .clientRef(uuid.toString())
                 .flwRef(null)
                 .narration(transferRequest.getNarration())
@@ -82,9 +84,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionDate(LocalDateTime.now())
                 .build();
 
-        transferRepository.save(transfer);
+        transferRepository.save(sender);
 
-        Transfer credit = Transfer.builder()
+        Transfer receiver = Transfer.builder()
                 .clientRef(uuid.toString())
                 .flwRef(null)
                 .narration(transferRequest.getNarration())
@@ -95,7 +97,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionDate(LocalDateTime.now())
                 .build();
 
-        transferRepository.save(credit);
+        transferRepository.save(receiver);
 
         return "Transfer successful!";
     }

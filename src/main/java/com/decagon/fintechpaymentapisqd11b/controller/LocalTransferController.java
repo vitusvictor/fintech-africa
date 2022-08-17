@@ -1,7 +1,7 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
+import com.decagon.fintechpaymentapisqd11b.service.LocalTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class TransferController {
+public class LocalTransferController {
 
-    private final TransactionService transactionService;
+    private final LocalTransferService localTransferService;
 
     @PostMapping
     public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest){
-        return new ResponseEntity<>(transactionService.localTransfer(transferRequest), HttpStatus.OK);
+        return new ResponseEntity<>(localTransferService.localTransfer(transferRequest), HttpStatus.OK);
     }
 }
