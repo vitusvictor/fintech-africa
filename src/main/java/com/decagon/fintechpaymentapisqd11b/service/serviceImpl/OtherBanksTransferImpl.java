@@ -108,7 +108,7 @@ public class OtherBanksTransferImpl implements TransferService {
                 .narration(transferRequest.getNarration())
                 .reference(clientRef)
                 .debitCurrency("NGN")
-                .callbackUrl("LAWAL/MUMINI")
+                .callbackUrl(Constant.VERIFY_TRANSFER)
                 .build();
 
         RestTemplate restTemplate = new RestTemplate();
