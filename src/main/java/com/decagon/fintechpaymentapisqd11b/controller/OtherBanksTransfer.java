@@ -26,6 +26,7 @@ public class OtherBanksTransfer {
 
     @PostMapping("/verify-transfer")
     public void verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
+
         otherBanksTransfer.verifyTransfer(verifyTransferRequest);
     }
 }
