@@ -8,6 +8,7 @@ import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
+import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -47,8 +47,13 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
         Wallet wallet = walletRepository.findWalletByUsers(user1);
 
-        if(!Objects.equals(encoder.encode(user1.getPin()), encoder.encode(transferRequest.getPin()))){
+        if(!encoder.matches(transferRequest.getPin(), encoder.encode(wallet.getUsers().getPin()))){
             throw new IncorrectPinException("Pin is incorrect");
+        }
+
+        Wallet wallet1 = walletRepository.findWalletByAccountNumber(transferRequest.getAccountNumber());
+        if(wallet1 == null) {
+            throw new AccountDoesNotExistException("Account number does not exist!");
         }
 
         if(transferRequest.getAmount().compareTo(BigDecimal.ZERO) == 0 ||
@@ -58,11 +63,6 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
         if (wallet.getBalance().compareTo(transferRequest.getAmount()) < 0){
             throw new InsufficientBalanceException("Insufficient funds. Please check your account!");
-        }
-
-        Wallet wallet1 = walletRepository.findWalletByAccountNumber(transferRequest.getAccountNumber());
-        if(wallet1 == null) {
-            throw new AccountDoesNotExistException("Account number does not exist!");
         }
 
         BigDecimal newBalance = wallet.getBalance().subtract(transferRequest.getAmount());
@@ -75,7 +75,8 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
         Transfer sender = Transfer.builder()
                 .clientRef(uuid.toString())
-                .flwRef(null)
+                .userStatus(UsersStatus.ACTIVE)
+                .flwRef("")
                 .narration(transferRequest.getNarration())
                 .amount(transferRequest.getAmount())
                 .sourceAccount(wallet.getAccountNumber())
@@ -88,7 +89,8 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
         Transfer receiver = Transfer.builder()
                 .clientRef(uuid.toString())
-                .flwRef(null)
+                .userStatus(UsersStatus.ACTIVE)
+                .flwRef("")
                 .narration(transferRequest.getNarration())
                 .amount(transferRequest.getAmount())
                 .sourceAccount(wallet1.getAccountNumber())
