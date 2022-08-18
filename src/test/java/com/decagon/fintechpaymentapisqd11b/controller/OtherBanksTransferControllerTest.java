@@ -13,11 +13,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@ContextConfiguration(classes = {OtherBanksTransfer.class})
+@ContextConfiguration(classes = {OtherBanksTransferController.class})
 @ExtendWith(SpringExtension.class)
-class OtherBanksTransferTest {
+class OtherBanksTransferControllerTest {
     @Autowired
-    private OtherBanksTransfer otherBanksTransfer;
+    private OtherBanksTransferController otherBanksTransferController;
 
     @MockBean
     private TransferService transferService;
@@ -25,7 +25,7 @@ class OtherBanksTransferTest {
     @Test
     void testGetBanks() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/banks");
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(otherBanksTransfer)
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(otherBanksTransferController)
                 .build()
                 .perform(requestBuilder);
         actualPerformResult.andExpect(MockMvcResultMatchers.status().isNotFound());

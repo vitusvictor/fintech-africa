@@ -10,6 +10,6 @@ public class Constant {
     public static final String OTHER_BANK_TRANSFER = "https://api.flutterwave.com/v3/transfers";
     public static final String STATUS = "PENDING";
 
-    public static final String VERIFY_TRANSFER = "http://localhost:8085/api/v1/verify-transfer";
+    public static final String VERIFY_TRANSFER = "http://localhost:8080/api/v1/transfer/verify-transfer";
 
 }

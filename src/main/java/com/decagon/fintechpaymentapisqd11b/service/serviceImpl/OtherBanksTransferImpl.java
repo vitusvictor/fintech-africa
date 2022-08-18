@@ -1,10 +1,13 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
-import com.decagon.fintechpaymentapisqd11b.customExceptions.UsersNotFoundException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.InsufficientAmountException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidAmountException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidPinException;
 import com.decagon.fintechpaymentapisqd11b.entities.FlwBank;
 import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
@@ -12,7 +15,6 @@ import com.decagon.fintechpaymentapisqd11b.request.FlwAccountRequest;
 import com.decagon.fintechpaymentapisqd11b.request.OtherBankTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
 import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
-import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwBankResponse;
 import com.decagon.fintechpaymentapisqd11b.response.OtherBankTransferResponse;
@@ -20,9 +22,12 @@ import com.decagon.fintechpaymentapisqd11b.service.TransferService;
 import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.security.core.userdetails.User;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,7 +39,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OtherBanksTransferImpl implements TransferService {
 
-    private final UsersRepository userRepository;
+    private final UsersRepository usersRepository;
     private final WalletRepository walletRepository;
     private final TransferRepository transferRepository;
     private final PasswordEncoder passwordEncoder;
@@ -59,8 +64,10 @@ public class OtherBanksTransferImpl implements TransferService {
         return flwBankResponse.getData();
     }
 
+    // this wasn't used anywhere
+    // and it doesn't call any method
     @Override
-    public BaseResponse<FlwAccountResponse> resolveAccount(FlwAccountRequest flwAccountRequest) {
+    public FlwAccountResponse resolveAccount(FlwAccountRequest flwAccountRequest) {
         // flwAccountRequest contains the name and bank
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -69,34 +76,33 @@ public class OtherBanksTransferImpl implements TransferService {
 
         HttpEntity<FlwAccountRequest> request = new HttpEntity<>(flwAccountRequest, headers);
 
-        FlwAccountResponse response = restTemplate.exchange(
+        return restTemplate.exchange(
                 Constant.RESOLVE_ACCOUNT_API,
                 HttpMethod.POST,
                 request,
                 FlwAccountResponse.class).getBody();
-
-        return new BaseResponse<>(HttpStatus.OK, "Account Resolved", response);
     }
 
     @Override
-    public BaseResponse<OtherBankTransferResponse> initiateOtherBankTransfer(TransferRequest transferRequest) {
-        OtherBankTransferResponse response = new OtherBankTransferResponse();
-        Users user = retrieveUserDetails(transferRequest.getUserId());
+    public void initiateOtherBankTransfer(TransferRequest transferRequest) {
+        User user1 = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Users user = retrieveUserDetails(user1.getUsername());
+
         if (!validatePin(transferRequest.getPin(), user)) {
-            new BaseResponse<>(HttpStatus.BAD_REQUEST, "Pin error", "Invalid pin");
+            throw new InvalidPinException("Pin error");
         }
         if (!validateRequestBalance(transferRequest.getAmount())) {
-            new BaseResponse<>(HttpStatus.BAD_REQUEST, "Amount error", "Invalid amount");
+            throw new InvalidAmountException("Amount error");
         }
         if (!validateWalletBalance(transferRequest.getAmount(), user)) {
-            new BaseResponse<>(HttpStatus.BAD_REQUEST, "Balance error", "Insufficient balance");
+           throw new InsufficientAmountException("Balance error");
         }
 
         Transfer transfer = saveTransaction(user, transferRequest);
-        response = otherBankTransfer(transferRequest, transfer.getClientRef());
+        OtherBankTransferResponse response = otherBankTransfer(transferRequest, transfer.getClientRef());
         transfer.setFlwRef(response.getData().getId());
-
-        return new BaseResponse<>(HttpStatus.OK, "Transfer successful", response);
+        transferRepository.save(transfer);
     }
 
     private OtherBankTransferResponse otherBankTransfer(TransferRequest transferRequest, String clientRef) {
@@ -118,13 +124,11 @@ public class OtherBanksTransferImpl implements TransferService {
 
         HttpEntity<OtherBankTransferRequest> request = new HttpEntity<>(otherBankTransferRequest, headers);
 
-        OtherBankTransferResponse response = restTemplate.exchange(
+        return restTemplate.exchange(
                 Constant.OTHER_BANK_TRANSFER,
                 HttpMethod.POST,
                 request,
                 OtherBankTransferResponse.class).getBody();
-
-        return response;
     }
 
     private Transfer saveTransaction(Users user, TransferRequest transferRequest) {
@@ -135,6 +139,8 @@ public class OtherBanksTransferImpl implements TransferService {
         BigDecimal balance = wallet.getBalance().subtract(amount);
         wallet.setBalance(balance);
 
+        // bank may have to be enum. so as to get their code
+
         Transfer transfer = new Transfer();
                 transfer.setSourceAccount(transferRequest.getAccountName());
                 transfer.setAmount(transferRequest.getAmount());
@@ -143,16 +149,15 @@ public class OtherBanksTransferImpl implements TransferService {
                 transfer.setTransferStatus(Constant.STATUS);
                 transfer.setDestinationAccountNumber(transferRequest.getAccountNumber());
                 transfer.setDestinationBank(transferRequest.getBankCode());
+                transfer.setTransactionType(TransactionType.DEBIT);
                 transfer.setCreatedAt(LocalDateTime.now());
 
         walletRepository.save(wallet);
         return transferRepository.save(transfer);
     }
 
-    private Users retrieveUserDetails(Long userId) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsersNotFoundException("User not found"));
-        return user;
+    private Users retrieveUserDetails(String username) {
+        return usersRepository.findUsersByEmail(username);
     }
 
     private boolean validatePin(String pin, Users user) {
@@ -172,13 +177,20 @@ public class OtherBanksTransferImpl implements TransferService {
     }
 
     @Override
-    public void verifyTransfer(VerifyTransferRequest verifyTransferRequest){
+    public String verifyTransfer(VerifyTransferRequest verifyTransferRequest){
         Long flwRef = Long.valueOf(verifyTransferRequest.getData().getId());
         String status = verifyTransferRequest.getData().getStatus();
 
         Transfer transfer = transferRepository.findTransfersByFlwRef(flwRef);
         transfer.setTransferStatus(status);
         transferRepository.save(transfer);
+
+        // i think it should be the same url from which the transfer was made
+        if (status.equals("success")) {
+            return "Transaction successful";
+        } else {
+            return "Transaction failed";
+        }
     }
 
 

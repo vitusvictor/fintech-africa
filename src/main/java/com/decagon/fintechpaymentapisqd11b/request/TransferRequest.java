@@ -13,17 +13,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Data
 @Builder
-public class TransferRequest { // to be supplied by user. some (e.g. id and status, to be supplied by code)
-    @NotNull(message = "User id is required")
-    private Long userId;
+public class TransferRequest {
+//    @NotNull(message = "User id is required")
+//    private Long userId; // user doesn't provide their id
     @NotNull(message = "Account number is required")
     private String accountNumber;
     @NotNull(message = "Account name is required")
     private String accountName;
     @NotNull(message = "Amount is required")
     private BigDecimal amount;
-    @NotNull(message = "Bank code is required")
-    private String bankCode;
+//    @NotNull(message = "Bank code is required") // user doesn't provide bank code
+//    private String bankCode;
     @NotNull(message = "Pin is required")
     private String pin;
     @NotNull(message = "Narration is required")

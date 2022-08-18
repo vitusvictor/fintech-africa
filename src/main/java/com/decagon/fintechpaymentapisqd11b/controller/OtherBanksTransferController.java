@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path="/api/v1/transfer")
-public class OtherBanksTransfer {
+public class OtherBanksTransferController {
     private TransferService transferService;
 
     @GetMapping("/banks")
@@ -21,7 +21,7 @@ public class OtherBanksTransfer {
     }
 
     @PostMapping("/verify-transfer")
-    public void verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
-
+    public String verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
+        return transferService.verifyTransfer(verifyTransferRequest);
     }
 }
