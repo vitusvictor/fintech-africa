@@ -21,12 +21,12 @@ public class Transaction extends BaseClass{
     @NotNull
     private BigDecimal amount;
 
-    @NotNull
-    @Column(length = 11)
-    private String sourceAccount;
 
     @NotNull
     private String narration;
+    private String destinationAccountNumber;
+    private String destinationBank;
+    private String destinationFullName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -37,6 +37,10 @@ public class Transaction extends BaseClass{
 
     @NotNull
     private String flwRef;
+
+    private String senderFullName;
+    private String senderBankName;
+    private String senderAccountNumber;
 
     @NotNull
     @Enumerated(EnumType.STRING)
