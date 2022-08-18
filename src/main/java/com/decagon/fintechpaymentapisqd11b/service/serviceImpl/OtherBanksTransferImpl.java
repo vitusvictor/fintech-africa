@@ -177,20 +177,13 @@ public class OtherBanksTransferImpl implements TransferService {
     }
 
     @Override
-    public String verifyTransfer(VerifyTransferRequest verifyTransferRequest){
+    public void verifyTransfer(VerifyTransferRequest verifyTransferRequest){
         Long flwRef = Long.valueOf(verifyTransferRequest.getData().getId());
         String status = verifyTransferRequest.getData().getStatus();
 
         Transfer transfer = transferRepository.findTransfersByFlwRef(flwRef);
         transfer.setTransferStatus(status);
         transferRepository.save(transfer);
-
-        // i think it should be the same url from which the transfer was made
-        if (status.equals("success")) {
-            return "Transaction successful";
-        } else {
-            return "Transaction failed";
-        }
     }
 
 

@@ -12,5 +12,5 @@ public interface TransferService {
     void initiateOtherBankTransfer(TransferRequest transferRequest);
     List<FlwBank> getBanks();
     FlwAccountResponse resolveAccount(FlwAccountRequest flwAccountRequest);
-    String verifyTransfer(VerifyTransferRequest verifyTransferRequest);
+    void verifyTransfer(VerifyTransferRequest verifyTransferRequest);
 }

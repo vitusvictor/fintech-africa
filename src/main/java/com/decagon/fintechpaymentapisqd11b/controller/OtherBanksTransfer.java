@@ -18,7 +18,6 @@ public class OtherBanksTransfer {
 
     private final OtherBanksTransferImpl otherBanksTransfer;
 
-
     @GetMapping("/banks")
     public List<FlwBank> getBanks() {
         return transferService.getBanks();
