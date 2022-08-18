@@ -5,6 +5,7 @@ import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.service.TransferService;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.OtherBanksTransferImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class OtherBanksTransfer {
     }
 
     @PostMapping("/verify-transfer")
-    public void verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
-
+    public ResponseEntity<String> verify(@RequestBody VerifyTransferRequest verifyTransferRequest){
         otherBanksTransfer.verifyTransfer(verifyTransferRequest);
+    return ResponseEntity.ok("status updated");
     }
 }
