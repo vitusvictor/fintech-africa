@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {OtherBanksTransferController.class})
 @ExtendWith(SpringExtension.class)
-class OtherBanksTransferControllerTest {
+class OtherBanksTransferControllerControllerTest {
     @Autowired
     private OtherBanksTransferController otherBanksTransferController;
 

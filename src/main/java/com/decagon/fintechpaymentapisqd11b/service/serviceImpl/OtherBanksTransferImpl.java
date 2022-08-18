@@ -107,7 +107,7 @@ public class OtherBanksTransferImpl implements TransferService {
 
     private OtherBankTransferResponse otherBankTransfer(TransferRequest transferRequest, String clientRef) {
         OtherBankTransferRequest otherBankTransferRequest = OtherBankTransferRequest.builder()
-                .accountBank(transferRequest.getBankCode())
+//                .accountBank(transferRequest.getBankCode())
                 .accountNumber(transferRequest.getAccountNumber())
                 .amount(transferRequest.getAmount())
                 .currency("NGN")
@@ -148,7 +148,7 @@ public class OtherBanksTransferImpl implements TransferService {
                 transfer.setNarration(transferRequest.getNarration());
                 transfer.setTransferStatus(Constant.STATUS);
                 transfer.setDestinationAccountNumber(transferRequest.getAccountNumber());
-                transfer.setDestinationBank(transferRequest.getBankCode());
+//                transfer.setDestinationBank(transferRequest.getBankCode());
                 transfer.setTransactionType(TransactionType.DEBIT);
                 transfer.setCreatedAt(LocalDateTime.now());
 

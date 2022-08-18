@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path="/api/v1/transfer")
-public class OtherBanksTransfer {
+public class OtherBanksTransferController {
     private final TransferService transferService;
 
     private final OtherBanksTransferImpl otherBanksTransfer;
