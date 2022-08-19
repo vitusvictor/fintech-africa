@@ -1,18 +1,12 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
-import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
-import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
-import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.request.FlwAccountRequest;
 import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwBankResponse;
 import com.decagon.fintechpaymentapisqd11b.util.Constant;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,20 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class OtherBanksTransferControllerControllerImplTest {
-
-    @MockBean
-    private TransferRepository transferRepository;
-
-    @MockBean
-    private UsersRepository usersRepository;
-
-    @MockBean
-    private WalletRepository walletRepository;
-
-    @Autowired
-    private OtherBanksTransferImpl otherBanksTransferImpl;
-
+class OtherBanksTransferImplTest {
 
     @Test
     void testGetBanks() {
@@ -64,10 +45,24 @@ class OtherBanksTransferControllerControllerImplTest {
 
 
     @Test
-    @Disabled
-    void testResolveAccount() {
+    public void resolveAccount() {
+        FlwAccountRequest flwAccountRequest = new FlwAccountRequest("0690000032", "044");
 
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.add("Authorization", "Bearer " + Constant.AUTHORIZATION);
 
+        HttpEntity<FlwAccountRequest> request = new HttpEntity<>(flwAccountRequest, headers);
+
+        FlwAccountResponse flwAccountResponse = restTemplate.exchange(
+                Constant.RESOLVE_ACCOUNT_API,
+                HttpMethod.POST,
+                request,
+                FlwAccountResponse.class).getBody();
+
+        assertEquals("success", flwAccountResponse.getStatus());
+        assertNotNull(flwAccountResponse.getData());
     }
 
 }

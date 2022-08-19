@@ -36,7 +36,6 @@ public class Users extends BaseClass{
     @NotNull
     private String phoneNumber;
 
-    @Column(length = 64)
     @NotNull
     private String password;
 
