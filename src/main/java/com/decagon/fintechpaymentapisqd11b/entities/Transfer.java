@@ -36,6 +36,10 @@ public class Transfer extends BaseClass{
     private String narration;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
+    private UsersStatus userStatus;
+
+    @NotNull
     private String clientRef;
 
     @NotNull

@@ -4,6 +4,7 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 
 public interface UsersService {
@@ -11,7 +12,6 @@ public interface UsersService {
     void saveToken(String token, Users user);
     void enableUser(String email) throws JSONException;
     Wallet generateWallet(Users user) throws JSONException;
-
     UsersResponse getUser();
-
+    void deleteUnverifiedToken(ConfirmationToken token);
 }

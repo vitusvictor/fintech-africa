@@ -1,7 +1,10 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
 import com.decagon.fintechpaymentapisqd11b.entities.FlwBank;
+import com.decagon.fintechpaymentapisqd11b.request.FlwAccountRequest;
+import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
 import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
+import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.service.TransferService;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.OtherBanksTransferImpl;
 import lombok.AllArgsConstructor;
@@ -21,7 +24,16 @@ public class OtherBanksTransferController {
     @GetMapping("/banks")
     public List<FlwBank> getBanks() {
         return transferService.getBanks();
+    }
 
+    @PostMapping("/otherbank-account-query")
+    public FlwAccountResponse resolveAccount(@RequestBody FlwAccountRequest flwAccountRequest) {
+        return transferService.resolveAccount(flwAccountRequest);
+    }
+
+    @PostMapping("/other-bank ")
+    public void makeTransfer(@RequestBody TransferRequest transferRequest) {
+        transferService.initiateOtherBankTransfer(transferRequest);
     }
 
     @PostMapping("/verify-transfer")

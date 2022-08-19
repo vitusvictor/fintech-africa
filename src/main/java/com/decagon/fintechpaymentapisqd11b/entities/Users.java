@@ -40,7 +40,6 @@ public class Users extends BaseClass{
     @NotNull
     private String password;
 
-    @Column(length = 4)
     @NotNull
     private String pin;
 

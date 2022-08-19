@@ -8,6 +8,7 @@ import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
+import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
@@ -23,11 +24,11 @@ import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.security.core.userdetails.User;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -42,7 +43,8 @@ public class OtherBanksTransferImpl implements TransferService {
     private final UsersRepository usersRepository;
     private final WalletRepository walletRepository;
     private final TransferRepository transferRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
 
     @Override
@@ -64,11 +66,8 @@ public class OtherBanksTransferImpl implements TransferService {
         return flwBankResponse.getData();
     }
 
-    // this wasn't used anywhere
-    // and it doesn't call any method
     @Override
     public FlwAccountResponse resolveAccount(FlwAccountRequest flwAccountRequest) {
-        // flwAccountRequest contains the name and bank
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -107,7 +106,7 @@ public class OtherBanksTransferImpl implements TransferService {
 
     private OtherBankTransferResponse otherBankTransfer(TransferRequest transferRequest, String clientRef) {
         OtherBankTransferRequest otherBankTransferRequest = OtherBankTransferRequest.builder()
-//                .accountBank(transferRequest.getBankCode())
+                .accountBank(transferRequest.getBankCode())
                 .accountNumber(transferRequest.getAccountNumber())
                 .amount(transferRequest.getAmount())
                 .currency("NGN")
@@ -139,17 +138,17 @@ public class OtherBanksTransferImpl implements TransferService {
         BigDecimal balance = wallet.getBalance().subtract(amount);
         wallet.setBalance(balance);
 
-        // bank may have to be enum. so as to get their code
-
         Transfer transfer = new Transfer();
-                transfer.setSourceAccount(transferRequest.getAccountName());
+                transfer.setDestinationAccountName(transferRequest.getAccountName());
+                transfer.setSourceAccount(wallet.getAccountNumber());
                 transfer.setAmount(transferRequest.getAmount());
                 transfer.setClientRef(clientReference);
                 transfer.setNarration(transferRequest.getNarration());
                 transfer.setTransferStatus(Constant.STATUS);
                 transfer.setDestinationAccountNumber(transferRequest.getAccountNumber());
-//                transfer.setDestinationBank(transferRequest.getBankCode());
+                transfer.setDestinationBank(transferRequest.getBankCode());
                 transfer.setTransactionType(TransactionType.DEBIT);
+                transfer.setUserStatus(UsersStatus.ACTIVE);
                 transfer.setCreatedAt(LocalDateTime.now());
 
         walletRepository.save(wallet);
@@ -161,7 +160,7 @@ public class OtherBanksTransferImpl implements TransferService {
     }
 
     private boolean validatePin(String pin, Users user) {
-        return passwordEncoder.matches(pin, user.getPin()); // confirm that password encoder is autowired. encode password
+        return bCryptPasswordEncoder.matches(bCryptPasswordEncoder.encode(pin), user.getPin());
     }
 
     private boolean validateRequestBalance(BigDecimal requestAmount) {

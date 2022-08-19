@@ -3,15 +3,14 @@ package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.EmailTakenException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.PasswordNotMatchingException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundException;
-import com.decagon.fintechpaymentapisqd11b.customExceptions.UsersNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
+import com.decagon.fintechpaymentapisqd11b.repository.ConfirmationTokenRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
-import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 import com.decagon.fintechpaymentapisqd11b.service.UsersService;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
@@ -24,17 +23,13 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 
-import com.decagon.fintechpaymentapisqd11b.entities.Users;
-import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
-import com.decagon.fintechpaymentapisqd11b.service.UsersService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -46,12 +41,10 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private String USER_EMAIL_ALREADY_EXISTS_MSG = "Users with email %s already exists!";
     private final ConfirmationTokenServiceImpl confirmTokenService;
     private final WalletService walletService;
-
-    private final JwtUtils jwtUtils;
-    private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
 
     @Override
@@ -75,7 +68,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         user.setPhoneNumber(usersDTO.getPhoneNumber());
         user.setBVN(usersDTO.getBVN());
         user.setPassword(bCryptPasswordEncoder.encode(usersDTO.getPassword()));
-        user.setPin(usersDTO.getPin());
+        user.setPin(bCryptPasswordEncoder.encode(usersDTO.getPin())); // limit pin to 4 digits
+//        user.setPin(usersDTO.getPin());
         user.setCreatedAt(LocalDateTime.now());
         user.setUsersStatus(UsersStatus.INACTIVE);
         user.setRole("USER");
@@ -96,7 +90,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusHours(24),
+                LocalDateTime.now().plusMinutes(2),
                 user
         );
         confirmTokenService.saveConfirmationToken(confirmationToken);
@@ -128,6 +122,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Users user = usersRepository.findByEmail(email).orElseThrow(() ->  new UserNotFoundException("Users not found."));
         user.setUsersStatus(UsersStatus.ACTIVE);
         usersRepository.save(user);
+    }
+
+    @Override
+    public void deleteUnverifiedToken(ConfirmationToken token) {
+        confirmationTokenRepository.delete(token);
     }
 
     @Override

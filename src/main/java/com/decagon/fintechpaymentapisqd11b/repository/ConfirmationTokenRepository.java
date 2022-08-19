@@ -1,5 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.repository;
 
+import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +24,6 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
                     "WHERE c.token = ?1"
     )
     void updateConfirmedAt(String token, LocalDateTime confirmedAt);
+
+    Optional<ConfirmationToken> findConfirmationTokenByUser(Users user);
 }
