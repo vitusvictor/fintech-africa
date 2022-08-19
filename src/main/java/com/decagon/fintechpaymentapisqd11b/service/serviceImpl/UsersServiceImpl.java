@@ -69,7 +69,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         user.setBVN(usersDTO.getBVN());
         user.setPassword(bCryptPasswordEncoder.encode(usersDTO.getPassword()));
         user.setPin(bCryptPasswordEncoder.encode(usersDTO.getPin())); // limit pin to 4 digits
-//        user.setPin(usersDTO.getPin());
         user.setCreatedAt(LocalDateTime.now());
         user.setUsersStatus(UsersStatus.INACTIVE);
         user.setRole("USER");
