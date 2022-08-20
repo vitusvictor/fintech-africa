@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class OtherBanksTransferImplTest {
+class OtherBanksTransactionImplTest {
 
     @Test
     void testGetBanks() {

@@ -4,7 +4,7 @@ import com.decagon.fintechpaymentapisqd11b.customExceptions.InsufficientAmountEx
 import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidAmountException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidPinException;
 import com.decagon.fintechpaymentapisqd11b.entities.FlwBank;
-import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
+import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
@@ -19,13 +19,13 @@ import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwBankResponse;
 import com.decagon.fintechpaymentapisqd11b.response.OtherBankTransferResponse;
-import com.decagon.fintechpaymentapisqd11b.service.TransferService;
+import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
 import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.security.core.userdetails.User;
@@ -38,7 +38,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class OtherBanksTransferImpl implements TransferService {
+public class OtherBanksTransactionImpl implements TransactionService {
 
     private final UsersRepository usersRepository;
     private final WalletRepository walletRepository;
@@ -98,10 +98,10 @@ public class OtherBanksTransferImpl implements TransferService {
            throw new InsufficientAmountException("Balance error");
         }
 
-        Transfer transfer = saveTransaction(user, transferRequest);
-        OtherBankTransferResponse response = otherBankTransfer(transferRequest, transfer.getClientRef());
-        transfer.setFlwRef(response.getData().getId());
-        transferRepository.save(transfer);
+        Transaction transaction = saveTransaction(user, transferRequest);
+        OtherBankTransferResponse response = otherBankTransfer(transferRequest, transaction.getClientRef());
+        transaction.setFlwRef(response.getData().getId());
+        transferRepository.save(transaction);
     }
 
     private OtherBankTransferResponse otherBankTransfer(TransferRequest transferRequest, String clientRef) {
@@ -130,7 +130,7 @@ public class OtherBanksTransferImpl implements TransferService {
                 OtherBankTransferResponse.class).getBody();
     }
 
-    private Transfer saveTransaction(Users user, TransferRequest transferRequest) {
+    private Transaction saveTransaction(Users user, TransferRequest transferRequest) {
         String clientReference = UUID.randomUUID().toString();
         Wallet wallet = walletRepository.findWalletByUsers(user);
 
@@ -138,21 +138,24 @@ public class OtherBanksTransferImpl implements TransferService {
         BigDecimal balance = wallet.getBalance().subtract(amount);
         wallet.setBalance(balance);
 
-        Transfer transfer = new Transfer();
-                transfer.setDestinationAccountName(transferRequest.getAccountName());
-                transfer.setSourceAccount(wallet.getAccountNumber());
-                transfer.setAmount(transferRequest.getAmount());
-                transfer.setClientRef(clientReference);
-                transfer.setNarration(transferRequest.getNarration());
-                transfer.setTransferStatus(Constant.STATUS);
-                transfer.setDestinationAccountNumber(transferRequest.getAccountNumber());
-                transfer.setDestinationBank(transferRequest.getBankCode());
-                transfer.setTransactionType(TransactionType.DEBIT);
-                transfer.setUserStatus(UsersStatus.ACTIVE);
-                transfer.setCreatedAt(LocalDateTime.now());
+        Transaction transaction = new Transaction();
+                transaction.setDestinationFullName(transferRequest.getAccountName());
+                transaction.setSenderAccountNumber(wallet.getAccountNumber());
+                transaction.setAmount(transferRequest.getAmount());
+                transaction.setClientRef(clientReference);
+                transaction.setNarration(transferRequest.getNarration());
+                transaction.setTransferStatus(Constant.STATUS);
+                transaction.setDestinationAccountNumber(transferRequest.getAccountNumber());
+                transaction.setDestinationBank(transferRequest.getBankCode());
+                transaction.setTransactionType(TransactionType.DEBIT);
+                transaction.setUserStatus(UsersStatus.ACTIVE);
+                transaction.setCreatedAt(LocalDateTime.now());
+                transaction.setWallet(wallet);
+                transaction.setSenderFullName(wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName());
+                transaction.setSenderBankName(wallet.getBankName());
 
         walletRepository.save(wallet);
-        return transferRepository.save(transfer);
+        return transferRepository.save(transaction);
     }
 
     private Users retrieveUserDetails(String username) {
@@ -180,9 +183,9 @@ public class OtherBanksTransferImpl implements TransferService {
         Long flwRef = Long.valueOf(verifyTransferRequest.getData().getId());
         String status = verifyTransferRequest.getData().getStatus();
 
-        Transfer transfer = transferRepository.findTransfersByFlwRef(flwRef);
-        transfer.setTransferStatus(status);
-        transferRepository.save(transfer);
+        Transaction transaction = transferRepository.findTransfersByFlwRef(flwRef);
+        transaction.setTransferStatus(status);
+        transferRepository.save(transaction);
     }
 
 

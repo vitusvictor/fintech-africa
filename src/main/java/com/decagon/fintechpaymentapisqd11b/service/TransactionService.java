@@ -8,7 +8,7 @@ import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
 
 import java.util.List;
 
-public interface TransferService {
+public interface TransactionService {
     void initiateOtherBankTransfer(TransferRequest transferRequest);
     List<FlwBank> getBanks();
     FlwAccountResponse resolveAccount(FlwAccountRequest flwAccountRequest);

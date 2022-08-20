@@ -89,7 +89,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(2),
+                LocalDateTime.now().plusHours(24),
                 user
         );
         confirmTokenService.saveConfirmationToken(confirmationToken);

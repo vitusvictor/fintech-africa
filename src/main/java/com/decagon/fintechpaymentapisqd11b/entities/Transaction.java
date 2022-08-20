@@ -7,7 +7,6 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -15,16 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-public class Transfer extends BaseClass{
+public class Transaction extends BaseClass{
     @NotNull
     @Column(length = 11)
-    private String sourceAccount;
+    private String senderAccountNumber;
+
+    private String senderFullName;
+
+    private String senderBankName;
 
     @NotNull
     private String destinationAccountNumber;
 
     @NotNull
-    private String destinationAccountName;
+    private String destinationFullName;
 
     @NotNull
     private String destinationBank;

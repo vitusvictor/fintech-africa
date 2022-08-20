@@ -74,7 +74,7 @@ class UsersServiceImplTest {
         wallet.setCreatedAt(null);
         wallet.setId(123L);
         wallet.setModifyAt(null);
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(null);
         wallet.setUsers(new Users());
 
@@ -101,7 +101,7 @@ class UsersServiceImplTest {
         wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setId(123L);
         wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet1.setTransfers(new ArrayList<>());
+        wallet1.setTransactions(new ArrayList<>());
         wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 12, 1, 2));
         wallet1.setUsers(users);
 
@@ -128,7 +128,7 @@ class UsersServiceImplTest {
         wallet2.setCreatedAt(LocalDateTime.of(12022, 7, 8, 1, 2));
         wallet2.setId(123L);
         wallet2.setModifyAt(LocalDateTime.of(2022, 9, 8, 1, 2));
-        wallet2.setTransfers(new ArrayList<>());
+        wallet2.setTransactions(new ArrayList<>());
         wallet2.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet2.setUsers(users1);
         when(walletService.createWallet((Users) any())).thenReturn(wallet2);
@@ -141,7 +141,7 @@ class UsersServiceImplTest {
         wallet3.setCreatedAt(null);
         wallet3.setId(123L);
         wallet3.setModifyAt(null);
-        wallet3.setTransfers(new ArrayList<>());
+        wallet3.setTransactions(new ArrayList<>());
         wallet3.setUpdatedAt(null);
         wallet3.setUsers(new Users());
 
@@ -168,7 +168,7 @@ class UsersServiceImplTest {
         wallet4.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet4.setId(123L);
         wallet4.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet4.setTransfers(new ArrayList<>());
+        wallet4.setTransactions(new ArrayList<>());
         wallet4.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet4.setUsers(users2);
 
@@ -195,7 +195,7 @@ class UsersServiceImplTest {
         wallet5.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet5.setId(123L);
         wallet5.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet5.setTransfers(new ArrayList<>());
+        wallet5.setTransactions(new ArrayList<>());
         wallet5.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet5.setUsers(users3);
         when(walletRepository.save((Wallet) any())).thenReturn(wallet5);
@@ -223,7 +223,7 @@ class UsersServiceImplTest {
         wallet6.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet6.setId(123L);
         wallet6.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet6.setTransfers(new ArrayList<>());
+        wallet6.setTransactions(new ArrayList<>());
         wallet6.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet6.setUsers(users4);
 
@@ -250,7 +250,7 @@ class UsersServiceImplTest {
         wallet7.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet7.setId(123L);
         wallet7.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet7.setTransfers(new ArrayList<>());
+        wallet7.setTransactions(new ArrayList<>());
         wallet7.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet7.setUsers(users5);
 
@@ -277,7 +277,7 @@ class UsersServiceImplTest {
         wallet8.setCreatedAt(null);
         wallet8.setId(123L);
         wallet8.setModifyAt(null);
-        wallet8.setTransfers(new ArrayList<>());
+        wallet8.setTransactions(new ArrayList<>());
         wallet8.setUpdatedAt(null);
         wallet8.setUsers(new Users());
 
@@ -304,7 +304,7 @@ class UsersServiceImplTest {
         wallet9.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet9.setId(123L);
         wallet9.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet9.setTransfers(new ArrayList<>());
+        wallet9.setTransactions(new ArrayList<>());
         wallet9.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet9.setUsers(users7);
 
@@ -343,7 +343,7 @@ class UsersServiceImplTest {
         wallet.setCreatedAt(null);
         wallet.setId(123L);
         wallet.setModifyAt(null);
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(null);
         wallet.setUsers(new Users());
 
@@ -370,7 +370,7 @@ class UsersServiceImplTest {
         wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setId(123L);
         wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet1.setTransfers(new ArrayList<>());
+        wallet1.setTransactions(new ArrayList<>());
         wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setUsers(users);
 
@@ -397,7 +397,7 @@ class UsersServiceImplTest {
         wallet2.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet2.setId(123L);
         wallet2.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet2.setTransfers(new ArrayList<>());
+        wallet2.setTransactions(new ArrayList<>());
         wallet2.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet2.setUsers(users1);
         when(walletService.createWallet((Users) any())).thenReturn(wallet2);
@@ -410,7 +410,7 @@ class UsersServiceImplTest {
         wallet3.setCreatedAt(null);
         wallet3.setId(123L);
         wallet3.setModifyAt(null);
-        wallet3.setTransfers(new ArrayList<>());
+        wallet3.setTransactions(new ArrayList<>());
         wallet3.setUpdatedAt(null);
         wallet3.setUsers(new Users());
 
@@ -437,7 +437,7 @@ class UsersServiceImplTest {
         wallet4.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet4.setId(123L);
         wallet4.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet4.setTransfers(new ArrayList<>());
+        wallet4.setTransactions(new ArrayList<>());
         wallet4.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet4.setUsers(users2);
 
@@ -489,7 +489,7 @@ class UsersServiceImplTest {
         wallet.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setId(123L);
         wallet.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setUsers(users);
 
@@ -516,7 +516,7 @@ class UsersServiceImplTest {
         wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setId(123L);
         wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet1.setTransfers(new ArrayList<>());
+        wallet1.setTransactions(new ArrayList<>());
         wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setUsers(users1);
 

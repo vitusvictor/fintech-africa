@@ -5,8 +5,8 @@ import com.decagon.fintechpaymentapisqd11b.request.FlwAccountRequest;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
 import com.decagon.fintechpaymentapisqd11b.request.VerifyTransferRequest;
 import com.decagon.fintechpaymentapisqd11b.response.FlwAccountResponse;
-import com.decagon.fintechpaymentapisqd11b.service.TransferService;
-import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.OtherBanksTransferImpl;
+import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
+import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.OtherBanksTransactionImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,23 +17,23 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping(path="/api/v1/transfer")
 public class OtherBanksTransferController {
-    private final TransferService transferService;
+    private final TransactionService transactionService;
 
-    private final OtherBanksTransferImpl otherBanksTransfer;
+    private final OtherBanksTransactionImpl otherBanksTransfer;
 
     @GetMapping("/banks")
     public List<FlwBank> getBanks() {
-        return transferService.getBanks();
+        return transactionService.getBanks();
     }
 
     @PostMapping("/otherbank-account-query")
     public FlwAccountResponse resolveAccount(@RequestBody FlwAccountRequest flwAccountRequest) {
-        return transferService.resolveAccount(flwAccountRequest);
+        return transactionService.resolveAccount(flwAccountRequest);
     }
 
     @PostMapping("/other-bank ")
     public void makeTransfer(@RequestBody TransferRequest transferRequest) {
-        transferService.initiateOtherBankTransfer(transferRequest);
+        transactionService.initiateOtherBankTransfer(transferRequest);
     }
 
     @PostMapping("/verify-transfer")
