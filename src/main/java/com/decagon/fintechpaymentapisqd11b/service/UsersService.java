@@ -4,7 +4,10 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.domain.Page;
 
 public interface UsersService {
     String registerUser(UsersDTO usersDTO) throws JSONException;
@@ -13,4 +16,9 @@ public interface UsersService {
     Wallet generateWallet(Users user) throws JSONException;
 
     UsersResponse getUser();
+
+    BaseResponse<Page<TransactionHistoryResponse>>
+    getTransactionHistory(TransactionHistoryPages transactionHistoryPages);
+
+
 }

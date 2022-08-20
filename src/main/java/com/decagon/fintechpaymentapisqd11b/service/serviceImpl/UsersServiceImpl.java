@@ -6,20 +6,28 @@ import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundExceptio
 import com.decagon.fintechpaymentapisqd11b.customExceptions.UsersNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
+import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
+import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
+import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.UsersService;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -47,11 +55,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final ConfirmationTokenServiceImpl confirmTokenService;
     private final WalletService walletService;
 
-    private final JwtUtils jwtUtils;
-    private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final TransactionRepository transactionRepository;
 
 
     @Override
@@ -143,4 +151,44 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         }
     }
 
+    public BaseResponse<Page<TransactionHistoryResponse>> getTransactionHistory(TransactionHistoryPages transactionHistoryPages) throws NullPointerException{
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = usersRepository.findUsersByEmail(userEmail);
+
+        Sort sort = Sort.by(transactionHistoryPages.getSortDirection(), transactionHistoryPages.getSortBy());
+        Pageable pageable = PageRequest.of(transactionHistoryPages.getPageNumber(), transactionHistoryPages.getPageSize(), sort);
+
+        Wallet wallet = walletRepository.findWalletByUsers(user);
+
+        String userAccountNumber = wallet.getAccountNumber();
+
+        Page<Transaction> transactions = transactionRepository
+                .findAllBySenderAccountNumberOrDestinationAccountNumber(userAccountNumber, userAccountNumber, pageable);
+
+        List<TransactionHistoryResponse> userHistory = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            TransactionHistoryResponse response = mapTransferToTransactionHistoryResponse(userAccountNumber, transaction);
+            userHistory.add(response);
+        }
+
+        PageImpl<TransactionHistoryResponse> transactionHistoryPage = new PageImpl<>(userHistory, pageable, transactions.getTotalElements());
+
+        return new BaseResponse<>(HttpStatus.OK, "Transaction History retrieved", transactionHistoryPage);
+    }
+
+    private TransactionHistoryResponse mapTransferToTransactionHistoryResponse(String userAccountNumber, Transaction transaction) {
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("E, dd-MMMM-yyyy HH:mm");
+        boolean isSender = userAccountNumber.equals(transaction.getSenderAccountNumber());
+        String amount = String.format("\u20a6%,.2f",transaction.getAmount());
+        return TransactionHistoryResponse.builder()
+                .id(transaction.getId())
+                .name(isSender ? transaction.getDestinationFullName() : transaction.getSenderFullName())
+                .bank(isSender ? transaction.getDestinationBank() : transaction.getSenderBankName())
+                .type(transaction.getTransactionType())
+                .transactionTime(dateFormat.format(transaction.getCreatedAt()))
+                .amount(isSender ? "- " + amount : "+ " + amount)
+                .build();
+    }
 }

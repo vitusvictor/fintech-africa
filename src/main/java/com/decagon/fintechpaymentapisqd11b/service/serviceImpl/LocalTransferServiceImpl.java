@@ -4,12 +4,12 @@ import com.decagon.fintechpaymentapisqd11b.customExceptions.AccountDoesNotExistE
 import com.decagon.fintechpaymentapisqd11b.customExceptions.IncorrectPinException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.InsufficientBalanceException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidAmountException;
-import com.decagon.fintechpaymentapisqd11b.entities.Transfer;
+import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
-import com.decagon.fintechpaymentapisqd11b.repository.TransferRepository;
+import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
@@ -32,7 +32,7 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
     private final UsersRepository usersRepository;
 
-    private final TransferRepository transferRepository;
+    private final TransactionRepository transactionRepository;
 
     private final BCryptPasswordEncoder encoder;
 
@@ -73,35 +73,45 @@ public class LocalTransferServiceImpl implements LocalTransferService {
         wallet1.setBalance(creditBalance);
         Wallet creditedWallet = walletRepository.save(wallet1);
 
-        Transfer sender = Transfer.builder()
+        Transaction sender = Transaction.builder()
                 .clientRef(uuid.toString())
                 .userStatus(UsersStatus.ACTIVE)
                 .flwRef("")
                 .narration(transferRequest.getNarration())
                 .amount(transferRequest.getAmount())
-                .sourceAccount(wallet.getAccountNumber())
+                .senderAccountNumber(wallet.getAccountNumber())
+                .senderFullName(wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName())
+                .senderBankName(wallet.getBankName())
+                .destinationAccountNumber(wallet1.getAccountNumber())
+                .destinationFullName(wallet1.getUsers().getFirstName() + " " + wallet1.getUsers().getLastName())
+                .destinationBank(wallet1.getBankName())
                 .transactionType(TransactionType.DEBIT)
                 .wallet(debitedWallet)
                 .transactionDate(LocalDateTime.now())
                 .build();
 
-        transferRepository.save(sender);
+        transactionRepository.save(sender);
 
-        Transfer receiver = Transfer.builder()
+        Transaction receiver = Transaction.builder()
                 .clientRef(uuid.toString())
                 .userStatus(UsersStatus.ACTIVE)
                 .flwRef("")
                 .narration(transferRequest.getNarration())
                 .amount(transferRequest.getAmount())
-                .sourceAccount(wallet1.getAccountNumber())
+                .destinationAccountNumber(wallet1.getAccountNumber())
+                .destinationFullName(wallet1.getUsers().getFirstName() + " " + wallet1.getUsers().getLastName())
+                .destinationBank(wallet1.getBankName())
+                .senderAccountNumber(wallet.getAccountNumber())
+                .senderFullName(wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName())
+                .senderBankName(wallet.getBankName())
                 .transactionType(TransactionType.CREDIT)
                 .wallet(creditedWallet)
                 .transactionDate(LocalDateTime.now())
                 .build();
 
-        transferRepository.save(receiver);
+        transactionRepository.save(receiver);
 
-        return "Transfer successful!";
+        return "Transaction successful!";
     }
 
 }

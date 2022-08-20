@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {LocalTransferController.class})
 @ExtendWith(SpringExtension.class)
-class LocalTransferControllerTest {
+class LocalTransactionControllerTest {
     @Autowired
     private LocalTransferController localTransferController;
 

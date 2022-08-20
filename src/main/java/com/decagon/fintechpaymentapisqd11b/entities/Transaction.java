@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -18,16 +17,16 @@ import java.util.Date;
 @Builder
 
 @Entity
-public class Transfer extends BaseClass{
+public class Transaction extends BaseClass{
     @NotNull
     private BigDecimal amount;
 
-    @NotNull
-    @Column(length = 11)
-    private String sourceAccount;
 
     @NotNull
     private String narration;
+    private String destinationAccountNumber;
+    private String destinationBank;
+    private String destinationFullName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -38,6 +37,10 @@ public class Transfer extends BaseClass{
 
     @NotNull
     private String flwRef;
+
+    private String senderFullName;
+    private String senderBankName;
+    private String senderAccountNumber;
 
     @NotNull
     @Enumerated(EnumType.STRING)
