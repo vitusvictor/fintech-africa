@@ -61,7 +61,7 @@ class LoginServiceImplTest {
         wallet.setCreatedAt(null);
         wallet.setId(123L);
         wallet.setModifyAt(null);
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(null);
         wallet.setUsers(new Users());
 
@@ -88,7 +88,7 @@ class LoginServiceImplTest {
         wallet1.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setId(123L);
         wallet1.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet1.setTransfers(new ArrayList<>());
+        wallet1.setTransactions(new ArrayList<>());
         wallet1.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet1.setUsers(users);
 

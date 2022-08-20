@@ -89,7 +89,7 @@ class RegistrationServiceImplTest {
         wallet.setCreatedAt(null);
         wallet.setId(123L);
         wallet.setModifyAt(null);
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(null);
         wallet.setUsers(new Users());
 
@@ -140,7 +140,7 @@ class RegistrationServiceImplTest {
         wallet.setCreatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setId(123L);
         wallet.setModifyAt(LocalDateTime.of(2022, 7, 8, 1, 2));
-        wallet.setTransfers(new ArrayList<>());
+        wallet.setTransactions(new ArrayList<>());
         wallet.setUpdatedAt(LocalDateTime.of(2022, 7, 8, 1, 2));
         wallet.setUsers(users);
 
