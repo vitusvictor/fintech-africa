@@ -109,7 +109,6 @@ class RegistrationServiceImplTest {
         users.setWallet(wallet);
 
         registrationServiceImpl.resendVerificationEmail(users);
-        verify(usersService).enableUser((String) any());
         verify(usersService).saveToken((String) any(), (Users) any());
         verify(mailService).sendMail((SendMailDto) any());
     }

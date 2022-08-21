@@ -8,11 +8,13 @@ import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistor
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
+import com.decagon.fintechpaymentapisqd11b.dto.*;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +36,7 @@ public class UsersController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestPayload loginRequestPayload)
-    {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestPayload loginRequestPayload) throws JSONException {
             log.info("successful");
             String token = loginService.login(loginRequestPayload);
             return new ResponseEntity<>(new LoginResponseDto(token),HttpStatus.OK);
