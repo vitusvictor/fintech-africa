@@ -8,7 +8,6 @@ import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistor
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
-import com.decagon.fintechpaymentapisqd11b.dto.*;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
@@ -61,17 +60,17 @@ public class UsersController {
 
     @PostMapping("users/changePassword")
     public BaseResponse<String> changePassword(@RequestBody PasswordRequest passwordRequest){
-        return loginService.changePassword(passwordRequest);
+        return usersService.changePassword(passwordRequest);
     }
 
     @PostMapping("/forgot-Password")
     public BaseResponse<String> forgotPassword(@RequestBody PasswordRequest passwordRequest) throws MessagingException{
-        return loginService.generateResetToken(passwordRequest);
+        return usersService.generateResetToken(passwordRequest);
     }
 
     @PostMapping("/reset-Password")
     public BaseResponse<String> resetPassword(@RequestBody PasswordRequest passwordRequest, @RequestParam ("token") String token){
-        return loginService.resetPassword(passwordRequest, token);
+        return usersService.resetPassword(passwordRequest, token);
     }
 
 }

@@ -4,6 +4,7 @@ import com.decagon.fintechpaymentapisqd11b.customExceptions.EmailTakenException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.PasswordNotMatchingException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.UsersNotFoundException;
+import com.decagon.fintechpaymentapisqd11b.dto.SendMailDto;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
@@ -15,6 +16,7 @@ import com.decagon.fintechpaymentapisqd11b.repository.ConfirmationTokenRepositor
 import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
+import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
@@ -26,6 +28,7 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +47,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -59,6 +64,8 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final JwtUtils jwtUtils;
     private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MailServiceImpl mailService;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenRepository confirmationTokenRepository;
@@ -199,5 +206,64 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
                 .transactionTime(dateFormat.format(transaction.getCreatedAt()))
                 .amount(isSender ? "- " + amount : "+ " + amount)
                 .build();
+    }
+
+    @Override
+    public BaseResponse<String> generateResetToken(PasswordRequest passwordRequest) throws MessagingException {
+        String email = passwordRequest.getEmail();
+        Users user = usersRepository.findUsersByEmail(email);
+        if (user == null) {
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email not found", null);
+        }
+        User user1 = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = jwtUtils.generateToken(user1);
+        String url = "http://localhost:3000/resetPassword?token=" + token;
+
+        log.info("click here to reset your password: " + url);
+        sendPasswordResetEmail(user, url);
+        return new BaseResponse<>(HttpStatus.OK,"Check Your Email to Reset Your Password",url);
+    }
+    private void sendPasswordResetEmail(Users user, String url) {
+        String subject = "Reset your password";
+        String senderName = "Fintech App";
+        String mailContent = "<p> Dear "+ user.getLastName() +", </p>";
+        mailContent += "<p> Please click the link below to reset your password, </p>";
+        mailContent += "<h3><a href=\""+ url + "\"> RESET PASSWORD </a></h3>";
+        SendMailDto sendMailDto = new SendMailDto(user.getEmail(), senderName, subject, mailContent);
+        mailService.sendMail(sendMailDto);
+    }
+
+    @Override
+    public BaseResponse<String> resetPassword(PasswordRequest passwordRequest, String token) {
+        if (!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Passwords don't match.", null);
+        }
+        String email = jwtUtils.extractUsername(token);
+
+        Users user = usersRepository.findUsersByEmail(email);
+
+        if (user == null) {
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email " + email + " not found", null);
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        usersRepository.save(user);
+        return new BaseResponse<>(HttpStatus.OK,"Password Reset Successfully",null);
+
+    }
+
+    @Override
+    public BaseResponse<String> changePassword(PasswordRequest passwordRequest) {
+        if(!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())){
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "new password must match with confirm password", null);
+        }
+        String loggedInUsername =  SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Users user = usersRepository.findUsersByEmail(loggedInUsername);
+
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+
+        usersRepository.save(user);
+        return new BaseResponse<>(HttpStatus.OK, "password changed successfully", null);
     }
 }
