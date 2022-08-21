@@ -121,7 +121,7 @@ public class LoginServiceImpl implements LoginService {
         boolean matchPasswordWithOldPassword = passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword());
 
         if(!matchPasswordWithOldPassword){
-            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "old password is not correct", null);
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Old password is not correct", null);
         }
         user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
 
