@@ -7,36 +7,26 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
+
 @Entity
 public class Transaction extends BaseClass{
     @NotNull
-    @Column(length = 11)
-    private String senderAccountNumber;
-
-    private String senderFullName;
-
-    private String senderBankName;
-
-    @NotNull
-    private String destinationAccountNumber;
-
-    @NotNull
-    private String destinationFullName;
-
-    @NotNull
-    private String destinationBank;
-
-    @NotNull
     private BigDecimal amount;
+
 
     @NotNull
     private String narration;
+    private String destinationAccountNumber;
+    private String destinationBank;
+    private String destinationFullName;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -48,9 +38,16 @@ public class Transaction extends BaseClass{
     @NotNull
     private Long flwRef;
 
+    private String senderFullName;
+    private String senderBankName;
+    private String senderAccountNumber;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
+
+    @NotNull
+    private LocalDateTime transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")

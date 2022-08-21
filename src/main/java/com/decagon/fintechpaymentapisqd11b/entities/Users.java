@@ -36,9 +36,12 @@ public class Users extends BaseClass{
     @NotNull
     private String phoneNumber;
 
+    @Column(columnDefinition = "TEXT")
+    @Size(min = 8)
     @NotNull
     private String password;
 
+    @Column(length = 4)
     @NotNull
     private String pin;
 

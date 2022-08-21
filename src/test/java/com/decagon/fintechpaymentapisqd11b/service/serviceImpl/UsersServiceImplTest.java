@@ -4,20 +4,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.decagon.fintechpaymentapisqd11b.customExceptions.EmailTakenException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.PasswordNotMatchingException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
+import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
+import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
+import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 
@@ -25,12 +35,25 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.time.Month;
+import java.util.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -61,6 +84,10 @@ class UsersServiceImplTest {
     @MockBean
     private WalletServiceImpl walletServiceImpl;
 
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void testRegisterUser() throws JSONException {
@@ -331,8 +358,6 @@ class UsersServiceImplTest {
     }
 
 
-
-
     @Test
     void testGenerateWallet() throws JSONException {
         Wallet wallet = new Wallet();
@@ -463,7 +488,6 @@ class UsersServiceImplTest {
     }
 
 
-
     @Test
     void testLoadUserByUsername() throws UsernameNotFoundException {
         Users users = new Users();
@@ -546,6 +570,6 @@ class UsersServiceImplTest {
         verify(usersRepository).findUsersByEmail((String) any());
     }
 
-
 }
+
 
