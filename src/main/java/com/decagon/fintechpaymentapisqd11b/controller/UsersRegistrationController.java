@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/v1/registration")
@@ -13,7 +15,7 @@ public class UsersRegistrationController {
         public final RegistrationService registrationService;
 
         @PostMapping("/register")
-        public String register(@RequestBody UsersDTO usersDTO) throws JSONException {
+        public String register(@Valid @RequestBody UsersDTO usersDTO) throws JSONException {
             return registrationService.register(usersDTO);
         }
 

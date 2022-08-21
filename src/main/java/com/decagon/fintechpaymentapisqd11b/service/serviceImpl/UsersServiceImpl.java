@@ -11,6 +11,7 @@ import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.repository.ConfirmationTokenRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
@@ -55,9 +56,12 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final ConfirmationTokenServiceImpl confirmTokenService;
     private final WalletService walletService;
 
+    private final JwtUtils jwtUtils;
+    private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
     private final TransactionRepository transactionRepository;
 
@@ -83,7 +87,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         user.setPhoneNumber(usersDTO.getPhoneNumber());
         user.setBVN(usersDTO.getBVN());
         user.setPassword(bCryptPasswordEncoder.encode(usersDTO.getPassword()));
-        user.setPin(usersDTO.getPin());
+        user.setPin(bCryptPasswordEncoder.encode(usersDTO.getPin())); // limit pin to 4 digits
         user.setCreatedAt(LocalDateTime.now());
         user.setUsersStatus(UsersStatus.INACTIVE);
         user.setRole("USER");
@@ -135,6 +139,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         Users user = usersRepository.findByEmail(email).orElseThrow(() ->  new UserNotFoundException("Users not found."));
         user.setUsersStatus(UsersStatus.ACTIVE);
         usersRepository.save(user);
+    }
+
+    @Override
+    public void deleteUnverifiedToken(ConfirmationToken token) {
+        confirmationTokenRepository.delete(token);
     }
 
     @Override

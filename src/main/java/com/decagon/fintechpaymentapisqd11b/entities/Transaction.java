@@ -7,7 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -36,7 +36,7 @@ public class Transaction extends BaseClass{
     private String clientRef;
 
     @NotNull
-    private String flwRef;
+    private Long flwRef;
 
     private String senderFullName;
     private String senderBankName;
@@ -47,10 +47,13 @@ public class Transaction extends BaseClass{
     private TransactionType transactionType;
 
     @NotNull
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     private Wallet wallet;
+
+    private String transferStatus;
+
 }
 
