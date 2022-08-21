@@ -3,7 +3,6 @@ package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.EmailTakenException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.PasswordNotMatchingException;
 import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundException;
-import com.decagon.fintechpaymentapisqd11b.customExceptions.UsersNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
@@ -17,7 +16,7 @@ import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
+import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.UsersService;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
@@ -33,17 +32,13 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 
-import com.decagon.fintechpaymentapisqd11b.entities.Users;
-import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
-import com.decagon.fintechpaymentapisqd11b.service.UsersService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.*;
 

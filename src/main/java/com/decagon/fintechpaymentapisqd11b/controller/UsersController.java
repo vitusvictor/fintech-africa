@@ -6,8 +6,7 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
-import com.decagon.fintechpaymentapisqd11b.dto.*;
+import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
@@ -33,9 +32,10 @@ public class UsersController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestPayload loginRequestPayload) throws JSONException {
-            log.info("successful");
+    public ResponseEntity<?> login(@RequestBody LoginRequestPayload loginRequestPayload) throws JSONException {
+
             String token = loginService.login(loginRequestPayload);
+            log.info("successful");
             return new ResponseEntity<>(new LoginResponseDto(token),HttpStatus.OK);
     }
 

@@ -31,7 +31,7 @@ public class OtherBanksTransferController {
         return transactionService.resolveAccount(flwAccountRequest);
     }
 
-    @PostMapping("/other-bank ")
+    @PostMapping("/other-bank")
     public void makeTransfer(@RequestBody TransferRequest transferRequest) {
         transactionService.initiateOtherBankTransfer(transferRequest);
     }

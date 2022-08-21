@@ -47,7 +47,7 @@ public class LocalTransferServiceImpl implements LocalTransferService {
 
         Wallet wallet = walletRepository.findWalletByUsers(user1);
 
-        if(!encoder.matches(transferRequest.getPin(), encoder.encode(wallet.getUsers().getPin()))){
+        if(!encoder.matches(transferRequest.getPin(), wallet.getUsers().getPin())){
             throw new IncorrectPinException("Pin is incorrect");
         }
 

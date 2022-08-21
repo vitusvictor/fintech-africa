@@ -27,6 +27,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.security.core.userdetails.User;
 
@@ -74,12 +75,16 @@ public class OtherBanksTransactionImpl implements TransactionService {
         headers.add("Authorization", "Bearer " + Constant.AUTHORIZATION);
 
         HttpEntity<FlwAccountRequest> request = new HttpEntity<>(flwAccountRequest, headers);
+        try {
+            return restTemplate.exchange(
+                    Constant.RESOLVE_ACCOUNT_API,
+                    HttpMethod.POST,
+                    request,
+                    FlwAccountResponse.class).getBody();
+        } catch (Exception ex) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 
-        return restTemplate.exchange(
-                Constant.RESOLVE_ACCOUNT_API,
-                HttpMethod.POST,
-                request,
-                FlwAccountResponse.class).getBody();
+        }
     }
 
     @Override

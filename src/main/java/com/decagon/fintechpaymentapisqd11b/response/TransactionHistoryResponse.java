@@ -1,4 +1,4 @@
-package com.decagon.fintechpaymentapisqd11b.service;
+package com.decagon.fintechpaymentapisqd11b.response;
 
 import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import lombok.*;

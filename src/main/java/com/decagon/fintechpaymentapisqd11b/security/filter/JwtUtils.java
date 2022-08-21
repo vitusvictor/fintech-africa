@@ -1,6 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.security.filter;
 
-import com.decagon.fintechpaymentapisqd11b.entities.SecretKey;
+import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +36,7 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SecretKey.KEYS).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(Constant.KEYS).parseClaimsJws(token).getBody();
     }
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
@@ -46,7 +46,7 @@ public class JwtUtils {
         return Jwts.builder().setClaims(claims).setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
-                .signWith(SignatureAlgorithm.HS256, SecretKey.KEYS).compact();
+                .signWith(SignatureAlgorithm.HS256, Constant.KEYS).compact();
 
     }
     public boolean validateToken(String token, UserDetails userDetails) {

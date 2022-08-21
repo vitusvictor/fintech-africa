@@ -6,6 +6,7 @@ import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
+import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
