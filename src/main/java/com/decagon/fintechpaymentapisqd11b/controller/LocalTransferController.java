@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping (path = "/api/v1")
+@RequestMapping (path = "/local-transfer")
 public class LocalTransferController {
 
     private final LocalTransferService localTransferService;
