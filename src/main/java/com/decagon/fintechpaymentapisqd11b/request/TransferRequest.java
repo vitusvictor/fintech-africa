@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransferRequest{
+    @NotNull(message = "User id is required")
+    private Long userId;
 
     @NotNull(message = "Account number is required")
     private String accountNumber;
@@ -26,4 +28,6 @@ public class TransferRequest{
 
     @NotNull(message = "Pin is required")
     private String pin;
+
+    private String bankCode;
 }

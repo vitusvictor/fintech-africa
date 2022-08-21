@@ -73,11 +73,11 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IncorrectPinException.class)
-    public ResponseEntity<ErrorResponse> handlerForIncorrectPinException(final IncorrectPinException ex){
+    @ExceptionHandler(InsufficientAmountException.class)
+    public ResponseEntity<ErrorResponse> handlerForInsufficientAmountException(final InsufficientAmountException ex){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
-        errorResponse.setDebugMessage("Pin is incorrect!");
+        errorResponse.setDebugMessage("Insufficient balance");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -85,26 +85,25 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handlerForInvalidAmountException(final InvalidAmountException ex){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
-        errorResponse.setDebugMessage("Invalid Amount!");
+        errorResponse.setDebugMessage("Invalid amount");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InsufficientBalanceException.class)
-    public ResponseEntity<ErrorResponse> handlerForInsufficientBalanceException(final InsufficientBalanceException ex){
+    @ExceptionHandler(InvalidPinException.class)
+    public ResponseEntity<ErrorResponse> handlerForInvalidPinException(final InvalidPinException ex){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
-        errorResponse.setDebugMessage("Insufficient funds!");
+        errorResponse.setDebugMessage("Invalid pin");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AccountDoesNotExistException.class)
-    public ResponseEntity<ErrorResponse> handlerForAccountDoesNotExistException(final AccountDoesNotExistException ex){
+    @ExceptionHandler(IncorrectPinException.class)
+    public ResponseEntity<ErrorResponse> handlerForIncorrectPinException(final InvalidPinException ex){
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
-        errorResponse.setDebugMessage("Account number does not exist!");
+        errorResponse.setDebugMessage("Incorrect pin");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
 
 }
 

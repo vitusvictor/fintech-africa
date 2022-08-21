@@ -36,7 +36,7 @@ public class Transaction extends BaseClass{
     private String clientRef;
 
     @NotNull
-    private String flwRef;
+    private Long flwRef;
 
     private String senderFullName;
     private String senderBankName;
@@ -52,5 +52,8 @@ public class Transaction extends BaseClass{
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id")
     private Wallet wallet;
+
+    private String transferStatus;
+
 }
 
