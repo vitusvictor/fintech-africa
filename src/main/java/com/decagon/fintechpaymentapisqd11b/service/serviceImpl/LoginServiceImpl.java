@@ -1,6 +1,7 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
 import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
+import com.decagon.fintechpaymentapisqd11b.dto.SendMailDto;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,8 @@ public class LoginServiceImpl implements LoginService {
     private final UsersServiceImpl usersService;
 
     private final PasswordEncoder passwordEncoder;
+    private final RegistrationServiceImpl registrationService;
+    private final MailServiceImpl mailService;
 
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
@@ -59,13 +63,47 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public BaseResponse<String> generateResetToken(PasswordRequest passwordRequest) throws MessagingException {
+        String email = passwordRequest.getEmail();
+        Users user = usersRepository.findUsersByEmail(email);
+        if (user == null) {
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email not found", null);
+        }
+        User user1 = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String token = jwtUtils.generateToken(user1);
+        String url = "http://localhost:3000/resetPassword?token=" + token;
 
-        return null;
+        log.info("click here to reset your password: " + url);
+        sendPasswordResetEmail(user, url);
+        return new BaseResponse<>(HttpStatus.OK,"Check Your Email to Reset Your Password",url);
+    }
+
+    private void sendPasswordResetEmail(Users user, String url) {
+        String subject = "Reset your password";
+        String senderName = "Fintech App";
+        String mailContent = "<p> Dear "+ user.getLastName() +", </p>";
+        mailContent += "<p> Please click the link below to reset your password, </p>";
+        mailContent += "<h3><a href=\""+ url + "\"> RESET PASSWORD </a></h3>";
+        SendMailDto sendMailDto = new SendMailDto(user.getEmail(), senderName, subject, mailContent);
+        mailService.sendMail(sendMailDto);
     }
 
     @Override
     public BaseResponse<String> resetPassword(PasswordRequest passwordRequest, String token) {
-        return null;
+        if (!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Passwords don't match.", null);
+        }
+        String email = jwtUtils.extractUsername(token);
+
+        Users user = usersRepository.findUsersByEmail(email);
+
+        if (user == null) {
+            return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email " + email + " not found", null);
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        usersRepository.save(user);
+        return new BaseResponse<>(HttpStatus.OK,"Password Reset Successfully",null);
+
     }
 
     @Override
@@ -75,19 +113,19 @@ public class LoginServiceImpl implements LoginService {
         }
         String loggedInUsername =  SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Users users = usersRepository.findUsersByEmail(loggedInUsername);
+        Users user = usersRepository.findUsersByEmail(loggedInUsername);
 
-        if (users == null){
+        if (user == null){
             return new BaseResponse<>(HttpStatus.UNAUTHORIZED, "User is not logged In", null);
         }
-        boolean matchPasswordWithOldPassword = passwordEncoder.matches(passwordRequest.getOldPassword(), users.getPassword());
+        boolean matchPasswordWithOldPassword = passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword());
 
         if(!matchPasswordWithOldPassword){
             return new BaseResponse<>(HttpStatus.BAD_REQUEST, "old password is not correct", null);
         }
-        users.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
 
-        usersRepository.save(users);
+        usersRepository.save(user);
         return new BaseResponse<>(HttpStatus.OK, "password changed successfully", null);
     }
 }
