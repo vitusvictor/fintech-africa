@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.decagon.fintechpaymentapisqd11b.customExceptions.EmailTakenException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.PasswordNotMatchingException;
+import com.decagon.fintechpaymentapisqd11b.customExceptions.UserNotFoundException;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersDTO;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
@@ -24,19 +26,21 @@ import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
+import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.time.Month;
 import java.util.*;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,6 +67,9 @@ class UsersServiceImplTest {
     private ConfirmationTokenServiceImpl confirmationTokenServiceImpl;
 
     @MockBean
+    private JwtUtils jwtUtils;
+
+    @MockBean
     private UsersRepository usersRepository;
 
     @Autowired
@@ -74,11 +81,13 @@ class UsersServiceImplTest {
     @MockBean
     private WalletService walletService;
 
+    @MockBean
+    private WalletServiceImpl walletServiceImpl;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
 
     @Test
     void testRegisterUser() throws JSONException {

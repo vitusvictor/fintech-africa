@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -52,7 +53,7 @@ class LoginServiceImplTest {
 
 
     @Test
-    void testLogin() throws AuthenticationException {
+    void testLogin() throws AuthenticationException, JSONException {
         Wallet wallet = new Wallet();
         wallet.setAccountNumber("00912347464");
         wallet.setBalance(null);

@@ -53,7 +53,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         sendMailVerificationLink(user.getFirstName(), user.getEmail(), link);
 
         usersService.saveToken(token, user);
-        usersService.enableUser(user.getEmail());
     }
 
     @Override
@@ -70,6 +69,9 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (expiredAt.isBefore(LocalDateTime.now())) {
             Users user = usersRepository.findByEmail(confirmationToken.getUser().getEmail()).orElseThrow(
                     ()-> new UserNotFoundException("Users not found"));
+
+            usersService.deleteUnverifiedToken(confirmationToken);
+
             resendVerificationEmail(user);
             return "Previous verification token expired. Check email for new token.";
         }
