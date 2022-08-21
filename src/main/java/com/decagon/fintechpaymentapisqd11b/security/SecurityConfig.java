@@ -24,6 +24,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 
     private final CustomAuthorizationFilter customAuthorizationFilter;
+
+    private final String[] Auth_Swagger = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui/login/",
+            "/swagger-ui/api/login/",
+            "/swagger-ui/#/**",
+            "/hello"
+    };
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
@@ -32,9 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.csrf().disable() ;
-        http.authorizeRequests().antMatchers("/api/v1/login**", "/api/v1/registration/**").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET,  "/api/v1/viewWalletDetails", "/api/v1//viewUser/**", "/api/v1//transactionHistory", "/api/v1/transfer/**").hasAnyAuthority("USER");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,  "/api/v1/transfer/**").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers("/login/**", "/register/**", "/confirmToken/**").permitAll();
+        http.authorizeRequests().antMatchers (Auth_Swagger).permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET,  "/viewWalletDetails", "/viewUser/**", "/transactionHistory").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers(HttpMethod.POST,  "/transfer/local").hasAnyAuthority("USER");
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
