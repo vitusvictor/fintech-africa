@@ -24,7 +24,7 @@ import javax.mail.MessagingException;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping(path = "/api/v1")
+@RequestMapping
 public class UsersController {
 
     private final UsersServiceImpl usersService;
