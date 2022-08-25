@@ -43,7 +43,9 @@ public class JwtUtils {
         return createToken(claims, userDetails.getUsername());
     }
     private String createToken(Map<String, Object> claims, String subject){
-        return Jwts.builder().setClaims(claims).setSubject(subject)
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
                 .signWith(SignatureAlgorithm.HS256, Constant.KEYS).compact();
@@ -53,4 +55,17 @@ public class JwtUtils {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+
+    public String generatePasswordResetToken(String email){
+//        Date currentDate = new Date();
+        Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, Constant.KEYS)
+                .compact();
+    }
+
 }

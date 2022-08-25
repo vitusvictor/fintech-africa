@@ -5,9 +5,12 @@ import com.decagon.fintechpaymentapisqd11b.dto.LoginResponseDto;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.request.EmailVerifyRequest;
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
+import com.decagon.fintechpaymentapisqd11b.request.ResetPasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
+import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
+
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
@@ -58,18 +61,18 @@ public class UsersController {
         return usersService.getTransactionHistory(transactionHistoryPages);
     }
 
-    @PostMapping("users/changePassword")
+    @PostMapping("/changePassword")
     public BaseResponse<String> changePassword(@RequestBody PasswordRequest passwordRequest){
         return usersService.changePassword(passwordRequest);
     }
 
     @PostMapping("/forgot-Password")
-    public BaseResponse<String> forgotPassword(@RequestBody PasswordRequest passwordRequest) throws MessagingException{
-        return usersService.generateResetToken(passwordRequest);
+    public BaseResponse<String> forgotPassword(@RequestBody EmailVerifyRequest emailVerifyRequest) throws MessagingException{
+        return usersService.generateResetToken(emailVerifyRequest);
     }
 
     @PostMapping("/reset-Password")
-    public BaseResponse<String> resetPassword(@RequestBody PasswordRequest passwordRequest, @RequestParam ("token") String token){
+    public BaseResponse<String> resetPassword(@RequestBody ResetPasswordRequest passwordRequest, @RequestParam ("token") String token){
         return usersService.resetPassword(passwordRequest, token);
     }
 

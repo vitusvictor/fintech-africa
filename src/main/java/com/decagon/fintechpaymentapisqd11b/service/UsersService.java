@@ -5,7 +5,9 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.request.EmailVerifyRequest;
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
+import com.decagon.fintechpaymentapisqd11b.request.ResetPasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
@@ -25,9 +27,9 @@ public interface UsersService {
     getTransactionHistory(TransactionHistoryPages transactionHistoryPages);
     void deleteUnverifiedToken(ConfirmationToken token);
 
-    BaseResponse<String> generateResetToken(PasswordRequest passwordRequest) throws MessagingException;
+    BaseResponse<String> generateResetToken(EmailVerifyRequest emailVerifyRequest) throws MessagingException;
 
-    BaseResponse<String> resetPassword(PasswordRequest passwordRequest, String token);
+    BaseResponse<String> resetPassword(ResetPasswordRequest resetPasswordRequest, String token);
 
     BaseResponse<String> changePassword(PasswordRequest passwordRequest);
 }

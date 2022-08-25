@@ -12,8 +12,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor @AllArgsConstructor
 public class PasswordRequest {
 
-    @Email
-    private String email;
+
+    @Size(min = 4, message = "Minimum password length is 4")
+    private String oldPassword;
 
     @Size(min = 4, message = "Minimum password length is 4")
     private String newPassword;
