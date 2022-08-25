@@ -23,6 +23,7 @@ import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
 import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,6 +40,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OtherBanksTransactionImpl implements TransactionService {
 
     private final UsersRepository usersRepository;
@@ -168,7 +170,7 @@ public class OtherBanksTransactionImpl implements TransactionService {
     }
 
     private boolean validatePin(String pin, Users user) {
-        return bCryptPasswordEncoder.matches(bCryptPasswordEncoder.encode(pin), user.getPin());
+        return bCryptPasswordEncoder.matches(pin, user.getPin());
     }
 
     private boolean validateRequestBalance(BigDecimal requestAmount) {

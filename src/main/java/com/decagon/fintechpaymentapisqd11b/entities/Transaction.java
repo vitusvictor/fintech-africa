@@ -35,7 +35,7 @@ public class Transaction extends BaseClass{
     @NotNull
     private String clientRef;
 
-    @NotNull
+//    @NotNull
     private Long flwRef;
 
     private String senderFullName;
@@ -46,7 +46,7 @@ public class Transaction extends BaseClass{
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    @NotNull
+//    @NotNull
     private LocalDateTime transactionDate;
 
     @ManyToOne

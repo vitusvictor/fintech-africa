@@ -8,6 +8,7 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
 import com.decagon.fintechpaymentapisqd11b.repository.ConfirmationTokenRepository;
@@ -190,7 +191,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
                 .id(transaction.getId())
                 .name(isSender ? transaction.getDestinationFullName() : transaction.getSenderFullName())
                 .bank(isSender ? transaction.getDestinationBank() : transaction.getSenderBankName())
-                .type(transaction.getTransactionType())
+                .type(isSender ? TransactionType.DEBIT : TransactionType.CREDIT)
                 .transactionTime(dateFormat.format(transaction.getCreatedAt()))
                 .amount(isSender ? "- " + amount : "+ " + amount)
                 .build();

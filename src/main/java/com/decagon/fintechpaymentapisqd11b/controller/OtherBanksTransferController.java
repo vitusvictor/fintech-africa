@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path="/api/v1/transfer")
+@RequestMapping(path="/transfer")
 public class OtherBanksTransferController {
     private final TransactionService transactionService;
 
@@ -32,8 +32,9 @@ public class OtherBanksTransferController {
     }
 
     @PostMapping("/other-bank")
-    public void makeTransfer(@RequestBody TransferRequest transferRequest) {
+    public String makeTransfer(@RequestBody TransferRequest transferRequest) {
         transactionService.initiateOtherBankTransfer(transferRequest);
+        return "Transfer successful";
     }
 
     @PostMapping("/verify-transfer")

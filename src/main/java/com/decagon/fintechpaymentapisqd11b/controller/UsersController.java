@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping
 public class UsersController {
 
     private final UsersServiceImpl usersService;
