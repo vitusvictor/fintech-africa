@@ -1,6 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.security.filter;
 
-import com.decagon.fintechpaymentapisqd11b.entities.SecretKey;
+import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,21 +36,36 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SecretKey.KEYS).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(Constant.KEYS).parseClaimsJws(token).getBody();
     }
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
     private String createToken(Map<String, Object> claims, String subject){
-        return Jwts.builder().setClaims(claims).setSubject(subject)
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 ))
-                .signWith(SignatureAlgorithm.HS256, SecretKey.KEYS).compact();
+                .signWith(SignatureAlgorithm.HS256, Constant.KEYS).compact();
 
     }
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
+
+    public String generatePasswordResetToken(String email){
+//        Date currentDate = new Date();
+        Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, Constant.KEYS)
+                .compact();
+    }
+
 }

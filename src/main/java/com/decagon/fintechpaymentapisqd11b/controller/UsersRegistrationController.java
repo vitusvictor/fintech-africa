@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
 public class UsersRegistrationController {
         public final RegistrationService registrationService;
 

@@ -1,24 +1,29 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
+import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.service.LocalTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping (path = "/local-transfer")
+
 public class LocalTransferController {
 
     private final LocalTransferService localTransferService;
 
     @PostMapping("/transfer/local")
-    public ResponseEntity<String> localTransfer(@RequestBody TransferRequest transferRequest){
-        return new ResponseEntity<>(localTransferService.localTransfer(transferRequest), HttpStatus.OK);
+    public String localTransfer(@RequestBody TransferRequest transferRequest){
+         localTransferService.makeLocalTransfer(transferRequest);
+         return "Transfer successful";
+    }
+
+    @PostMapping("/transfer/resolve-local-account")
+    public BaseResponse<?> resolveLocalAccount(@RequestBody String accountNumber){
+        return localTransferService.resolveLocalAccount(accountNumber);
     }
 }

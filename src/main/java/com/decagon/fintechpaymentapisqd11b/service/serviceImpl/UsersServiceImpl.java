@@ -10,16 +10,19 @@ import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
+import com.decagon.fintechpaymentapisqd11b.enums.TransactionType;
 import com.decagon.fintechpaymentapisqd11b.enums.UsersStatus;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
 import com.decagon.fintechpaymentapisqd11b.repository.ConfirmationTokenRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.TransactionRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
+import com.decagon.fintechpaymentapisqd11b.request.EmailVerifyRequest;
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
+import com.decagon.fintechpaymentapisqd11b.request.ResetPasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
-import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
+import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.UsersService;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import com.decagon.fintechpaymentapisqd11b.validations.token.ConfirmationToken;
@@ -36,10 +39,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 
-import com.decagon.fintechpaymentapisqd11b.entities.Users;
-import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
-import com.decagon.fintechpaymentapisqd11b.service.UsersService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -49,6 +48,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -64,7 +64,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final JwtUtils jwtUtils;
     private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
-    private final PasswordEncoder passwordEncoder;
     private final MailServiceImpl mailService;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -202,40 +201,39 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
                 .id(transaction.getId())
                 .name(isSender ? transaction.getDestinationFullName() : transaction.getSenderFullName())
                 .bank(isSender ? transaction.getDestinationBank() : transaction.getSenderBankName())
-                .type(transaction.getTransactionType())
+                .type(isSender ? TransactionType.DEBIT : TransactionType.CREDIT)
                 .transactionTime(dateFormat.format(transaction.getCreatedAt()))
                 .amount(isSender ? "- " + amount : "+ " + amount)
                 .build();
     }
 
     @Override
-    public BaseResponse<String> generateResetToken(PasswordRequest passwordRequest) throws MessagingException {
-        String email = passwordRequest.getEmail();
+    public BaseResponse<String> generateResetToken(EmailVerifyRequest emailVerifyRequest) throws MessagingException {
+        String email = emailVerifyRequest.getEmail();
         Users user = usersRepository.findUsersByEmail(email);
         if (user == null) {
             return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email not found", null);
         }
-        User user1 = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String token = jwtUtils.generateToken(user1);
-        String url = "http://localhost:3000/resetPassword?token=" + token;
 
-        log.info("click here to reset your password: " + url);
-        sendPasswordResetEmail(user, url);
-        return new BaseResponse<>(HttpStatus.OK,"Check Your Email to Reset Your Password",url);
+
+        String token = jwtUtils.generatePasswordResetToken(user.getEmail());
+//        String url = "//http://localhost:8085/api/v1/resetPassword?token=" + token;
+
+        sendPasswordResetEmail(user, token);
+        return new BaseResponse<>(HttpStatus.OK,"Check Your Email to Reset Your Password", null);
     }
     private void sendPasswordResetEmail(Users user, String url) {
         String subject = "Reset your password";
         String senderName = "Fintech App";
-        String mailContent = "<p> Dear "+ user.getLastName() +", </p>";
-        mailContent += "<p> Please click the link below to reset your password, </p>";
-        mailContent += "<h3><a href=\""+ url + "\"> RESET PASSWORD </a></h3>";
+        String mailContent = user.getLastName() + "\n"+ " Please copy this token \n";
+        mailContent += url;
         SendMailDto sendMailDto = new SendMailDto(user.getEmail(), senderName, subject, mailContent);
         mailService.sendMail(sendMailDto);
     }
 
     @Override
-    public BaseResponse<String> resetPassword(PasswordRequest passwordRequest, String token) {
-        if (!passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
+    public BaseResponse<String> resetPassword(ResetPasswordRequest resetPasswordRequest, String token) {
+        if (!resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmPassword())) {
             return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Passwords don't match.", null);
         }
         String email = jwtUtils.extractUsername(token);
@@ -246,7 +244,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
             return new BaseResponse<>(HttpStatus.NOT_FOUND, "User with email " + email + " not found", null);
         }
 
-        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(resetPasswordRequest.getNewPassword()));
         usersRepository.save(user);
         return new BaseResponse<>(HttpStatus.OK,"Password Reset Successfully",null);
 
@@ -261,7 +259,18 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
 
         Users user = usersRepository.findUsersByEmail(loggedInUsername);
 
-        user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+        if (user == null) {
+            return new BaseResponse<>(HttpStatus.UNAUTHORIZED, "User not logged In", null);
+        }
+
+        boolean matchPasswordWithOldPassword = bCryptPasswordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword());
+
+        if(!matchPasswordWithOldPassword){
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "old password is not correct", null);
+        }
+
+
+        user.setPassword(bCryptPasswordEncoder.encode(passwordRequest.getNewPassword()));
 
         usersRepository.save(user);
         return new BaseResponse<>(HttpStatus.OK, "password changed successfully", null);

@@ -23,10 +23,12 @@ import com.decagon.fintechpaymentapisqd11b.service.TransactionService;
 import com.decagon.fintechpaymentapisqd11b.util.Constant;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.security.core.userdetails.User;
 
@@ -38,6 +40,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OtherBanksTransactionImpl implements TransactionService {
 
     private final UsersRepository usersRepository;
@@ -74,12 +77,16 @@ public class OtherBanksTransactionImpl implements TransactionService {
         headers.add("Authorization", "Bearer " + Constant.AUTHORIZATION);
 
         HttpEntity<FlwAccountRequest> request = new HttpEntity<>(flwAccountRequest, headers);
+        try {
+            return restTemplate.exchange(
+                    Constant.RESOLVE_ACCOUNT_API,
+                    HttpMethod.POST,
+                    request,
+                    FlwAccountResponse.class).getBody();
+        } catch (Exception ex) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
 
-        return restTemplate.exchange(
-                Constant.RESOLVE_ACCOUNT_API,
-                HttpMethod.POST,
-                request,
-                FlwAccountResponse.class).getBody();
+        }
     }
 
     @Override
@@ -163,7 +170,7 @@ public class OtherBanksTransactionImpl implements TransactionService {
     }
 
     private boolean validatePin(String pin, Users user) {
-        return bCryptPasswordEncoder.matches(bCryptPasswordEncoder.encode(pin), user.getPin());
+        return bCryptPasswordEncoder.matches(pin, user.getPin());
     }
 
     private boolean validateRequestBalance(BigDecimal requestAmount) {
