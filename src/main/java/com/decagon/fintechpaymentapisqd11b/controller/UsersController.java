@@ -5,8 +5,9 @@ import com.decagon.fintechpaymentapisqd11b.dto.LoginResponseDto;
 import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
+import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
-import com.decagon.fintechpaymentapisqd11b.response.TransactionHistoryResponse;
+import com.decagon.fintechpaymentapisqd11b.service.TransactionHistoryResponse;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.LoginServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.UsersServiceImpl;
 import com.decagon.fintechpaymentapisqd11b.service.serviceImpl.WalletServiceImpl;
@@ -18,9 +19,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
+@RequestMapping
 public class UsersController {
 
     private final UsersServiceImpl usersService;
@@ -31,10 +35,9 @@ public class UsersController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestPayload loginRequestPayload) throws JSONException {
-
-            String token = loginService.login(loginRequestPayload);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestPayload loginRequestPayload) throws JSONException {
             log.info("successful");
+            String token = loginService.login(loginRequestPayload);
             return new ResponseEntity<>(new LoginResponseDto(token),HttpStatus.OK);
     }
 
@@ -53,6 +56,21 @@ public class UsersController {
     @GetMapping("/transactionHistory")
     public BaseResponse<Page<TransactionHistoryResponse>> getTransactionHistory(TransactionHistoryPages transactionHistoryPages) {
         return usersService.getTransactionHistory(transactionHistoryPages);
+    }
+
+    @PostMapping("users/changePassword")
+    public BaseResponse<String> changePassword(@RequestBody PasswordRequest passwordRequest){
+        return usersService.changePassword(passwordRequest);
+    }
+
+    @PostMapping("/forgot-Password")
+    public BaseResponse<String> forgotPassword(@RequestBody PasswordRequest passwordRequest) throws MessagingException{
+        return usersService.generateResetToken(passwordRequest);
+    }
+
+    @PostMapping("/reset-Password")
+    public BaseResponse<String> resetPassword(@RequestBody PasswordRequest passwordRequest, @RequestParam ("token") String token){
+        return usersService.resetPassword(passwordRequest, token);
     }
 
 }
