@@ -64,7 +64,6 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private final JwtUtils jwtUtils;
     private final WalletServiceImpl walletServices;
     private final WalletRepository walletRepository;
-    private final PasswordEncoder passwordEncoder;
     private final MailServiceImpl mailService;
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

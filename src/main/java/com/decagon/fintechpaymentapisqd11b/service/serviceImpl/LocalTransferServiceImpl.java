@@ -1,9 +1,4 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
-
-import com.decagon.fintechpaymentapisqd11b.customExceptions.AccountDoesNotExistException;
-import com.decagon.fintechpaymentapisqd11b.customExceptions.IncorrectPinException;
-import com.decagon.fintechpaymentapisqd11b.customExceptions.InsufficientBalanceException;
-import com.decagon.fintechpaymentapisqd11b.customExceptions.InvalidAmountException;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
@@ -18,13 +13,11 @@ import com.decagon.fintechpaymentapisqd11b.service.LocalTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -106,87 +99,5 @@ public class LocalTransferServiceImpl implements LocalTransferService {
         return new BaseResponse<>(HttpStatus.OK,"Account Found", accountName);
     }
 
-
-
-
-
-
-//    @Override
-//    public String localTransfer(TransferRequest transferRequest) {
-
-//        UUID uuid = UUID.randomUUID();
-//
-//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        Users user1 = usersRepository.findUsersByEmail(user.getUsername());
-//
-//        Wallet wallet = walletRepository.findWalletByUsers(user1);
-//
-//        if(!encoder.matches(transferRequest.getPin(), wallet.getUsers().getPin())){
-//            throw new IncorrectPinException("Pin is incorrect");
-//        }
-//
-//        Wallet wallet1 = walletRepository.findWalletByAccountNumber(transferRequest.getAccountNumber());
-//        if(wallet1 == null) {
-//            throw new AccountDoesNotExistException("Account number does not exist!");
-//        }
-//
-//        if(transferRequest.getAmount().compareTo(BigDecimal.ZERO) == 0 ||
-//                transferRequest.getAmount().compareTo(BigDecimal.ZERO) < 0){
-//            throw new InvalidAmountException("Invalid amount!");
-//        }
-//
-//        if (wallet.getBalance().compareTo(transferRequest.getAmount()) < 0){
-//            throw new InsufficientBalanceException("Insufficient funds. Please check your account!");
-//        }
-//
-//        BigDecimal newBalance = wallet.getBalance().subtract(transferRequest.getAmount());
-//        wallet.setBalance(newBalance);
-//        Wallet debitedWallet = walletRepository.save(wallet);
-//
-//        BigDecimal creditBalance = wallet1.getBalance().add(transferRequest.getAmount());
-//        wallet1.setBalance(creditBalance);
-//        Wallet creditedWallet = walletRepository.save(wallet1);
-//
-//        Transaction sender = Transaction.builder()
-//                .clientRef(uuid.toString())
-//                .userStatus(UsersStatus.ACTIVE)
-//                .flwRef(0L)
-//                .narration(transferRequest.getNarration())
-//                .amount(transferRequest.getAmount())
-//                .senderAccountNumber(wallet.getAccountNumber())
-//                .senderFullName(wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName())
-//                .senderBankName(wallet.getBankName())
-//                .destinationAccountNumber(wallet1.getAccountNumber())
-//                .destinationFullName(wallet1.getUsers().getFirstName() + " " + wallet1.getUsers().getLastName())
-//                .destinationBank(wallet1.getBankName())
-//                .transactionType(TransactionType.DEBIT)
-//                .wallet(debitedWallet)
-//                .transactionDate(LocalDateTime.now())
-//                .build();
-//
-//        transactionRepository.save(sender);
-//
-//        Transaction receiver = Transaction.builder()
-//                .clientRef(uuid.toString())
-//                .userStatus(UsersStatus.ACTIVE)
-//                .flwRef(0L)
-//                .narration(transferRequest.getNarration())
-//                .amount(transferRequest.getAmount())
-//                .destinationAccountNumber(wallet.getAccountNumber())
-//                .destinationFullName(wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName())
-//                .destinationBank(wallet.getBankName())
-//                .senderAccountNumber(wallet1.getAccountNumber())
-//                .senderFullName(wallet1.getUsers().getFirstName() + " " + wallet1.getUsers().getLastName())
-//                .senderBankName(wallet1.getBankName())
-//                .transactionType(TransactionType.CREDIT)
-//                .wallet(creditedWallet)
-//                .transactionDate(LocalDateTime.now())
-//                .build();
-//
-//        transactionRepository.save(receiver);
-//
-//        return "Transaction successful!";
-//    }
 
 }
