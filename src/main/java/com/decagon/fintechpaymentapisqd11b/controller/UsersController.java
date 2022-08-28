@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 @AllArgsConstructor
 @Slf4j
 @RequestMapping
+@CrossOrigin
 public class UsersController {
 
     private final UsersServiceImpl usersService;
