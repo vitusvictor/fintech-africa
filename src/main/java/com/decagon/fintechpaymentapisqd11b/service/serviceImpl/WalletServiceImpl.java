@@ -1,11 +1,13 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
 
+import com.decagon.fintechpaymentapisqd11b.dto.AccountFundDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
 import com.decagon.fintechpaymentapisqd11b.repository.UsersRepository;
 import com.decagon.fintechpaymentapisqd11b.repository.WalletRepository;
 import com.decagon.fintechpaymentapisqd11b.request.FlwWalletRequest;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.response.FlwVirtualAccountResponse;
 import com.decagon.fintechpaymentapisqd11b.security.filter.JwtUtils;
 import com.decagon.fintechpaymentapisqd11b.service.LoginService;
@@ -15,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,6 +91,24 @@ public class WalletServiceImpl implements WalletService {
     Wallet wallet = walletRepository.findWalletByUsers(users.getWallet().getUsers());
         BeanUtils.copyProperties(wallet,walletDto);
         return walletDto;
+    }
+
+    @Override
+    public BaseResponse<String> fundWallet(
+            AccountFundDTO amount) {
+
+        if(amount.getAmount().compareTo(BigDecimal.ONE) < 0){
+            return new BaseResponse<>(HttpStatus.BAD_REQUEST, "Invalid Amount", null);
+        }
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Users users = usersRepository.findUsersByEmail(user.getUsername());
+        Wallet wallet = walletRepository.findWalletByUsers(users);
+        BigDecimal bigDecimal = wallet.getBalance().add(amount.getAmount());
+        wallet.setBalance(bigDecimal);
+        walletRepository.save(wallet);
+        return new BaseResponse<>(HttpStatus.OK, "Account has been funded successfully", null);
+
+
     }
 
     private FlwWalletRequest generatePayload(Users user) {

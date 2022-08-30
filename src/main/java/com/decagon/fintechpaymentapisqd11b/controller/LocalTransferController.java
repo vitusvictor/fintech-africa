@@ -1,5 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
+import com.decagon.fintechpaymentapisqd11b.dto.ResolveLocalDTO;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
@@ -23,7 +24,7 @@ public class LocalTransferController {
     }
 
     @PostMapping("/transfer/resolve-local-account")
-    public BaseResponse<?> resolveLocalAccount(@RequestBody String accountNumber){
+    public BaseResponse<?> resolveLocalAccount(@RequestBody ResolveLocalDTO accountNumber){
         return localTransferService.resolveLocalAccount(accountNumber);
     }
 }

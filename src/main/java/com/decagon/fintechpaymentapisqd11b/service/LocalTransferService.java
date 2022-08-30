@@ -1,5 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.service;
 
+import com.decagon.fintechpaymentapisqd11b.dto.ResolveLocalDTO;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.request.TransferRequest;
 import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
@@ -10,5 +11,5 @@ public interface LocalTransferService {
 
     BaseResponse<Transaction> makeLocalTransfer(TransferRequest transferRequest);
 
-    BaseResponse<?> resolveLocalAccount(String accountNumber);
+    BaseResponse<?> resolveLocalAccount(ResolveLocalDTO accountNumber);
 }

@@ -1,9 +1,6 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
-import com.decagon.fintechpaymentapisqd11b.dto.LoginRequestPayload;
-import com.decagon.fintechpaymentapisqd11b.dto.LoginResponseDto;
-import com.decagon.fintechpaymentapisqd11b.dto.UsersResponse;
-import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
+import com.decagon.fintechpaymentapisqd11b.dto.*;
 import com.decagon.fintechpaymentapisqd11b.pagination_criteria.TransactionHistoryPages;
 import com.decagon.fintechpaymentapisqd11b.request.EmailVerifyRequest;
 import com.decagon.fintechpaymentapisqd11b.request.PasswordRequest;
@@ -48,6 +45,11 @@ public class UsersController {
     @GetMapping("/viewWalletDetails")
     public ResponseEntity<WalletDto> viewWalletDetails()  {
         return new ResponseEntity<>(walletService.viewWalletDetails(),HttpStatus.OK);
+    }
+
+    @PostMapping("/fundLocalWallet")
+    public BaseResponse<String> accountFund(@RequestBody AccountFundDTO amount){
+        return walletService.fundWallet(amount);
     }
 
 
