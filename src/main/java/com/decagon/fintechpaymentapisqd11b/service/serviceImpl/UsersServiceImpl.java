@@ -225,7 +225,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     private void sendPasswordResetEmail(Users user, String url) {
         String subject = "Reset your password";
         String senderName = "Fintech App";
-        String mailContent = user.getLastName() + "\n"+ " Please copy this token \n";
+        String mailContent = user.getLastName() + "\n"+ " Please click on the link below to reset your password \n";
         mailContent += "http://localhost:3000/reset-Password?token="+url;
         SendMailDto sendMailDto = new SendMailDto(user.getEmail(), senderName, subject, mailContent);
         mailService.sendMail(sendMailDto);
@@ -276,6 +276,13 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         return new BaseResponse<>(HttpStatus.OK, "password changed successfully", null);
     }
 
+    @Override
+    public BaseResponse<String> getUserName() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = usersRepository.findUsersByEmail(userName);
+        String fullName = "Hi, " + user.getFirstName();
+        return new BaseResponse<>(HttpStatus.OK, "fetch successful",fullName);
+    }
 
 
 }
