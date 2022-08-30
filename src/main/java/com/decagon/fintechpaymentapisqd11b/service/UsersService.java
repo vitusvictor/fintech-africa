@@ -33,5 +33,7 @@ public interface UsersService {
 
     BaseResponse<String> changePassword(PasswordRequest passwordRequest);
 
+    BaseResponse<String>  getUserName();
+
 
 }
