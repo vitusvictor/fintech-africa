@@ -50,8 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http.authorizeRequests().antMatchers("/login/**", "/register/**", "/confirmToken/**", "/forgot-Password","/reset-Password").permitAll();
         http.authorizeRequests().antMatchers (Auth_Swagger).permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET,  "/viewWalletDetails", "/viewUser/**","/transactionHistory" , "/changePassword").hasAnyAuthority("USER");
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/fundLocalWallet","/transfer/**" , "/viewUser").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers(HttpMethod.GET,  "/viewWalletDetails", "/viewUser/**","/transactionHistory" ,"/getUserName", "/changePassword").hasAnyAuthority("USER");
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/fundLocalWallet","/transfer/**").hasAnyAuthority("USER");
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
