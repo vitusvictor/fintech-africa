@@ -1,4 +1,5 @@
 package com.decagon.fintechpaymentapisqd11b.service.serviceImpl;
+import com.decagon.fintechpaymentapisqd11b.dto.ResolveLocalDTO;
 import com.decagon.fintechpaymentapisqd11b.entities.Transaction;
 import com.decagon.fintechpaymentapisqd11b.entities.Users;
 import com.decagon.fintechpaymentapisqd11b.entities.Wallet;
@@ -89,8 +90,8 @@ public class LocalTransferServiceImpl implements LocalTransferService {
     }
 
     @Override
-    public BaseResponse<?> resolveLocalAccount(String accountNumber) {
-        Wallet wallet = walletRepository.findWalletByAccountNumber(accountNumber);
+    public BaseResponse<?> resolveLocalAccount(ResolveLocalDTO accountNumber) {
+        Wallet wallet = walletRepository.findWalletByAccountNumber(accountNumber.getAccountNumber());
 
         String accountName = wallet.getUsers().getFirstName() + " " + wallet.getUsers().getLastName();
         if(wallet == null){

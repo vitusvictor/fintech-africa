@@ -226,7 +226,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         String subject = "Reset your password";
         String senderName = "Fintech App";
         String mailContent = user.getLastName() + "\n"+ " Please copy this token \n";
-        mailContent += url;
+        mailContent += "http://localhost:3000/reset-Password?token="+url;
         SendMailDto sendMailDto = new SendMailDto(user.getEmail(), senderName, subject, mailContent);
         mailService.sendMail(sendMailDto);
     }
@@ -275,4 +275,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
         usersRepository.save(user);
         return new BaseResponse<>(HttpStatus.OK, "password changed successfully", null);
     }
+
+
+
 }
