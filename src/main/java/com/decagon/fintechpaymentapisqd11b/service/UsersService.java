@@ -32,4 +32,8 @@ public interface UsersService {
     BaseResponse<String> resetPassword(ResetPasswordRequest resetPasswordRequest, String token);
 
     BaseResponse<String> changePassword(PasswordRequest passwordRequest);
+
+    BaseResponse<String>  getUserName();
+
+
 }

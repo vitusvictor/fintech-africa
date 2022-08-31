@@ -1,7 +1,9 @@
 package com.decagon.fintechpaymentapisqd11b.controller;
 
+import com.decagon.fintechpaymentapisqd11b.dto.AccountFundDTO;
 import com.decagon.fintechpaymentapisqd11b.dto.WalletDto;
 import com.decagon.fintechpaymentapisqd11b.request.FundAccountRequest;
+import com.decagon.fintechpaymentapisqd11b.response.BaseResponse;
 import com.decagon.fintechpaymentapisqd11b.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,11 @@ public class WalletController {
     @GetMapping("/viewWalletDetails")
     public ResponseEntity<WalletDto> viewWalletDetails()  {
         return new ResponseEntity<>(walletService.viewWalletDetails(), HttpStatus.OK);
+    }
+
+    @PostMapping("/fundLocalWallet")
+    public BaseResponse<String> accountFund(@RequestBody AccountFundDTO amount){
+        return walletService.fundWallet(amount);
     }
 
 }

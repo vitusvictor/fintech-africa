@@ -72,4 +72,9 @@ public class UsersController {
         return usersService.resetPassword(passwordRequest, token);
     }
 
+    @GetMapping("/getUserName")
+    public BaseResponse<String> getName(){
+        return usersService.getUserName();
+    }
+
 }
