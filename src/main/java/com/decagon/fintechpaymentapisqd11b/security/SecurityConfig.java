@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         
         http.cors().and().csrf().disable();
-        http.authorizeRequests().antMatchers("/login/**", "/register/**", "/confirmToken/**", "/forgot-Password","/reset-Password").permitAll();
+        http.authorizeRequests().antMatchers("/login/**", "/register/**", "/confirmToken/**", "/forgot-Password", "/wallet/fund", "/reset-Password").permitAll();
         http.authorizeRequests().antMatchers (Auth_Swagger).permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.GET,  "/viewWalletDetails", "/viewUser/**","/transactionHistory" , "/changePassword").hasAnyAuthority("USER");
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/transfer/**").hasAnyAuthority("USER");

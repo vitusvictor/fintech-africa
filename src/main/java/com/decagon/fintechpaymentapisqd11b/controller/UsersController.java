@@ -45,11 +45,6 @@ public class UsersController {
             return new ResponseEntity<>(new LoginResponseDto(token),HttpStatus.OK);
     }
 
-    @GetMapping("/viewWalletDetails")
-    public ResponseEntity<WalletDto> viewWalletDetails()  {
-        return new ResponseEntity<>(walletService.viewWalletDetails(),HttpStatus.OK);
-    }
-
 
     @GetMapping("/viewUser")
     public ResponseEntity<UsersResponse> getUsers(){

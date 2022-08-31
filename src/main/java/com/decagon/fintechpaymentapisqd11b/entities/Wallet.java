@@ -27,6 +27,8 @@ public class Wallet extends BaseClass{
 
     @NotNull
     private String bankName;
+    @NotNull
+    private String txRef;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

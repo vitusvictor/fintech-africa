@@ -13,5 +13,6 @@ public class Constant {
     public static final String KEYS="secret";
 
     public static final String VERIFY_TRANSFER = "http://localhost:8085/api/v1/transfer/verify-transfer";
+    public static final String VERIFY_TRANSACTION = "https://api.flutterwave.com/v3/transactions/:";
 
 }

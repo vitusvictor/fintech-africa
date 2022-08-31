@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(FailedMailException.class)
-    public ResponseEntity<ErrorResponse> handlerForFailedMailException(final FailedMailException ex){
+    public ResponseEntity<ErrorResponse> handlerForFailedMailException(final FailedMailException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Email not sent!");
@@ -20,7 +20,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmailTakenException.class)
-    public ResponseEntity<ErrorResponse> handlerForEmailTakenException(final EmailTakenException ex){
+    public ResponseEntity<ErrorResponse> handlerForEmailTakenException(final EmailTakenException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Email already taken!");
@@ -28,7 +28,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handlerForUserAlreadyExistsException(final UserAlreadyExistsException ex){
+    public ResponseEntity<ErrorResponse> handlerForUserAlreadyExistsException(final UserAlreadyExistsException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Users already exists!");
@@ -36,7 +36,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerUserNotFound(final UserNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handlerUserNotFound(final UserNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Users not found!");
@@ -44,7 +44,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<ErrorResponse> handlerTokenExpiredException(final TokenExpiredException ex){
+    public ResponseEntity<ErrorResponse> handlerTokenExpiredException(final TokenExpiredException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Token expired. Generate new token to activate account.");
@@ -52,7 +52,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyConfirmedException.class)
-    public ResponseEntity<ErrorResponse> handlerEmailAlreadyConfirmedException(final EmailAlreadyConfirmedException ex){
+    public ResponseEntity<ErrorResponse> handlerEmailAlreadyConfirmedException(final EmailAlreadyConfirmedException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Email already confirmed.");
@@ -60,7 +60,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(TokenNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerTokenNotFoundException(final TokenNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handlerTokenNotFoundException(final TokenNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Token not found.");
@@ -68,7 +68,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(PasswordNotMatchingException.class)
-    public ResponseEntity<ErrorResponse> handlerForPasswordNotMatchingException(final PasswordNotMatchingException ex){
+    public ResponseEntity<ErrorResponse> handlerForPasswordNotMatchingException(final PasswordNotMatchingException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Password mismatch!");
@@ -76,7 +76,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InsufficientAmountException.class)
-    public ResponseEntity<ErrorResponse> handlerForInsufficientAmountException(final InsufficientAmountException ex){
+    public ResponseEntity<ErrorResponse> handlerForInsufficientAmountException(final InsufficientAmountException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Insufficient balance");
@@ -84,7 +84,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidAmountException.class)
-    public ResponseEntity<ErrorResponse> handlerForInvalidAmountException(final InvalidAmountException ex){
+    public ResponseEntity<ErrorResponse> handlerForInvalidAmountException(final InvalidAmountException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Invalid amount");
@@ -92,7 +92,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidPinException.class)
-    public ResponseEntity<ErrorResponse> handlerForInvalidPinException(final InvalidPinException ex){
+    public ResponseEntity<ErrorResponse> handlerForInvalidPinException(final InvalidPinException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Invalid pin");
@@ -100,7 +100,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(IncorrectPinException.class)
-    public ResponseEntity<ErrorResponse> handlerForIncorrectPinException(final InvalidPinException ex){
+    public ResponseEntity<ErrorResponse> handlerForIncorrectPinException(final InvalidPinException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Incorrect pin");
@@ -108,7 +108,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerForUsernameNotFoundException(final UsernameNotFoundException ex){
+    public ResponseEntity<ErrorResponse> handlerForUsernameNotFoundException(final UsernameNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Username not found, please check your input");
@@ -118,7 +118,7 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<ErrorResponse> handlerForHttpClientErrorExceptionException(final HttpClientErrorException ex){
+    public ResponseEntity<ErrorResponse> handlerForHttpClientErrorExceptionException(final HttpClientErrorException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Account cannot be resolved");
@@ -127,19 +127,28 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InsufficientBalanceException.class)
-    public ResponseEntity<ErrorResponse> handlerForInsufficientBalanceException(final InsufficientBalanceException ex){
+    public ResponseEntity<ErrorResponse> handlerForInsufficientBalanceException(final InsufficientBalanceException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Insufficient funds!");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(AccountDoesNotExistException.class)
-    public ResponseEntity<ErrorResponse> handlerForAccountDoesNotExistException(final AccountDoesNotExistException ex){
+    public ResponseEntity<ErrorResponse> handlerForAccountDoesNotExistException(final AccountDoesNotExistException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(ex.getMessage());
         errorResponse.setDebugMessage("Account number does not exist!");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CompromisedRequestException.class)
+    public ResponseEntity<ErrorResponse> compromisedRequestException(final CompromisedRequestException ex) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setDebugMessage("Request is compromised!");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+    }
 }
 
